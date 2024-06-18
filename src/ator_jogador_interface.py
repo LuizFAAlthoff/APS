@@ -65,7 +65,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.window.close()
 
     def start_match(self):
-        start_status = self.dog_server_interface.start_match(2)
+        start_status = self.dog_server_interface.start_match(3)
         message = start_status.get_message()
         sg.popup(message)
 
