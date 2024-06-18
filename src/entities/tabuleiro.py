@@ -60,3 +60,4 @@ class Tabuleiro:
     def jogador_atual(self, jogador_atual):
         self.__jogador_atual = jogador_atual
 
+    
