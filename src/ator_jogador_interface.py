@@ -3,6 +3,7 @@ from tkinter import messagebox
 from tkinter import simpledialog
 from window import Window
 from dog.dog_actor import DogActor
+from PIL import Image, ImageTk
 
 class AtorJogadorInterface(DogPlayerInterface):
     def __init__(self, window: Window):
@@ -65,3 +66,16 @@ class AtorJogadorInterface(DogPlayerInterface):
         message = self.__dog_server_interface.initialize(player_name,self)
         messagebox.showinfo(message=message)
         self.__window.mainloop()
+
+    def load_cards(self):
+        cor_primaria = ["vermelho", "laranja", "amarelo", "verde", "azul", "anil", "roxo"]
+        cor_secundaria = ["roxo",  "anil", "azul", "verde", "amarelo", "laranja", "vermelho"]
+        dict_of_cards = {}
+
+        for cor_primaria in cor_primaria:
+            for cor_secundaria in cor_secundaria:
+                for numero in range(1, 3):
+                    image = Image.open(f'cartas/{numero}-{cor_primaria}-{cor_secundaria}.jpeg')
+                    img = image.resize((100, 150))
+                    dict_of_cards[f"{numero}-{cor_primaria}-{cor_secundaria}.jpeg"] = ImageTk.PhotoImage(img)
+                    x=1
