@@ -1,4 +1,4 @@
-from entities.carta import Carta
+from APS.src.carta import Carta
 
 
 class CartaNormal(Carta):
