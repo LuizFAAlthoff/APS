@@ -1,10 +1,11 @@
-import PySimpleGUI as sg
+import _tkinter as tk
 from dog.dog_interface import DogPlayerInterface
 from dog.dog_actor import DogActor
 
 class AtorJogadorInterface(DogPlayerInterface):
     def __init__(self):
         self.dog_server_interface = DogActor()
+        self.bloqueado = False
         self.layout_nome = [
             [sg.Text("Digite seu nome:")],
             [sg.InputText(key='NOME')],
