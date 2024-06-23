@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import messagebox
+from PIL import Image, ImageTk
 
 def centralizar_janela(root, largura_janela, altura_janela):
     # Obtém a largura e a altura do monitor/tela
@@ -11,6 +13,12 @@ def centralizar_janela(root, largura_janela, altura_janela):
 
     # Define a geometria da janela (largura x altura + posição x + posição y)
     root.geometry(f"{largura_janela}x{altura_janela}+{pos_x}+{pos_y}")
+
+def comprar_carta():
+    messagebox.showinfo("Ação", "Carta comprada")
+
+def realizar_jogada():
+    messagebox.showinfo("Ação", "Jogada realizada")
 
 # Função para configurar a barra de rolagem horizontal
 def configurar_scrollbar(event=None):
@@ -54,6 +62,26 @@ subframe3 = tk.Frame(frame2, bg="#f5a942", width=largura_subframe*1/5, height=al
 subframe1.pack(side="left", fill="both", expand=True)
 subframe2.pack(side="left", fill="both", expand=True)
 subframe3.pack(side="left", fill="both", expand=True)
+
+# Adiciona a palavra "contador" e o número 1 abaixo dela no subframe1
+label_contador = tk.Label(subframe1, text="contador", bg="#f5c942")
+label_contador.pack(pady=10)
+label_numero = tk.Label(subframe1, text="1", bg="#f5c942")
+label_numero.pack()
+
+# Adiciona uma imagem no subframe2
+# Carrega a imagem (substitua 'caminho_para_imagem.png' pelo caminho da sua imagem)
+imagem = Image.open("src/cartas/1-amarelo-anil.jpeg")
+imagem = imagem.resize((largura_subframe, altura_frame), Image.ANTIALIAS)
+imagem_tk = ImageTk.PhotoImage(imagem)
+label_imagem = tk.Label(subframe2, image=imagem_tk, bg="#a5b942")
+label_imagem.pack(expand=True)
+
+# Adiciona os botões no subframe3
+btn_comprar = tk.Button(subframe3, text="Comprar Carta", command=comprar_carta)
+btn_comprar.pack(pady=10)
+btn_jogada = tk.Button(subframe3, text="Realizar Jogada", command=realizar_jogada)
+btn_jogada.pack(pady=10)
 
 # Lista de cartas do jogador
 cartas = ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5", "Carta 6", "Carta 7", "Carta 8", "Carta 9", "Carta 10"]
