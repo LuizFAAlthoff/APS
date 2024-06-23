@@ -38,5 +38,18 @@ frame1.pack(fill="both")
 frame2.pack(fill="both")
 frame3.pack(fill="both")
 
+# Calcula a largura de cada subframe no frame do meio
+largura_subframe = largura_janela // 3
+
+# Cria os três subframes dentro do frame do meio
+subframe1 = tk.Frame(frame2, bg="#FFFFFF", width=largura_subframe, height=altura_frame)
+subframe2 = tk.Frame(frame2, bg="#AAAAAA", width=largura_subframe, height=altura_frame)
+subframe3 = tk.Frame(frame2, bg="#555555", width=largura_subframe, height=altura_frame)
+
+# Posiciona os subframes no frame do meio usando pack com side="left"
+subframe1.pack(side="left", fill="both", expand=True)
+subframe2.pack(side="left", fill="both", expand=True)
+subframe3.pack(side="left", fill="both", expand=True)
+
 # Mantém a janela aberta
 root.mainloop()
