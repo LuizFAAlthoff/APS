@@ -51,5 +51,32 @@ subframe1.pack(side="left", fill="both", expand=True)
 subframe2.pack(side="left", fill="both", expand=True)
 subframe3.pack(side="left", fill="both", expand=True)
 
+# Lista de cartas do jogador
+cartas = ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5", "Carta 6", "Carta 7", "Carta 8", "Carta 9", "Carta 10"]
+
+# Cria um canvas no frame de baixo
+canvas = tk.Canvas(frame3, bg="#0000FF", width=largura_janela, height=altura_frame)
+canvas.pack(side="left", fill="both", expand=True)
+
+# Adiciona uma barra de rolagem horizontal ao frame de baixo
+scrollbar = tk.Scrollbar(frame3, orient="horizontal", command=canvas.xview)
+scrollbar.pack(side="bottom", fill="x")
+
+# Configura o canvas para usar a barra de rolagem
+canvas.configure(xscrollcommand=scrollbar.set)
+
+# Cria um frame interno dentro do canvas para conter os botões das cartas
+frame_cartas = tk.Frame(canvas, bg="#0000FF")
+canvas.create_window((0, 0), window=frame_cartas, anchor="nw")
+
+# Adiciona botões para cada carta no frame interno, com espaçamento entre eles
+for carta in cartas:
+    btn = tk.Button(frame_cartas, text=carta, padx=50, pady=80)
+    btn.pack(side="left", padx=20, pady=10, anchor="center")
+
+# Atualiza o tamanho do frame interno para ajustar os botões
+frame_cartas.update_idletasks()
+canvas.configure(scrollregion=canvas.bbox("all"))
+
 # Mantém a janela aberta
 root.mainloop()
