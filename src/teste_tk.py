@@ -12,6 +12,10 @@ def centralizar_janela(root, largura_janela, altura_janela):
     # Define a geometria da janela (largura x altura + posição x + posição y)
     root.geometry(f"{largura_janela}x{altura_janela}+{pos_x}+{pos_y}")
 
+# Função para configurar a barra de rolagem horizontal
+def configurar_scrollbar(event=None):
+    canvas.configure(scrollregion=canvas.bbox("all"))
+
 # Cria a instância da janela principal
 root = tk.Tk()
 
@@ -58,25 +62,21 @@ cartas = ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5", "Carta 6", "Car
 canvas = tk.Canvas(frame3, bg="#0000FF", width=largura_janela, height=altura_frame)
 canvas.pack(side="left", fill="both", expand=True)
 
-# Adiciona uma barra de rolagem horizontal ao frame de baixo
+# Adiciona botões para cada carta no frame interno, com espaçamento entre eles
+x_position = 10  # Posição inicial dos botões no eixo x
+
+for carta in cartas:
+    btn = tk.Button(canvas, text=carta, padx=50, pady=80)
+    btn.pack(side="left", padx=10, pady=10, anchor="center")
+    x_position += 100
+
+# Adiciona uma barra de rolagem horizontal ao canvas
 scrollbar = tk.Scrollbar(frame3, orient="horizontal", command=canvas.xview)
 scrollbar.pack(side="bottom", fill="x")
 
 # Configura o canvas para usar a barra de rolagem
 canvas.configure(xscrollcommand=scrollbar.set)
-
-# Cria um frame interno dentro do canvas para conter os botões das cartas
-frame_cartas = tk.Frame(canvas, bg="#0000FF")
-canvas.create_window((0, 0), window=frame_cartas, anchor="nw")
-
-# Adiciona botões para cada carta no frame interno, com espaçamento entre eles
-for carta in cartas:
-    btn = tk.Button(frame_cartas, text=carta, padx=50, pady=80)
-    btn.pack(side="left", padx=20, pady=10, anchor="center")
-
-# Atualiza o tamanho do frame interno para ajustar os botões
-frame_cartas.update_idletasks()
-canvas.configure(scrollregion=canvas.bbox("all"))
+canvas.bind("<Configure>", lambda event, canvas=canvas: configurar_scrollbar())
 
 # Mantém a janela aberta
 root.mainloop()
