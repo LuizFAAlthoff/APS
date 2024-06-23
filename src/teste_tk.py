@@ -25,5 +25,8 @@ altura_janela = 600
 # Centraliza a janela na tela
 centralizar_janela(root, largura_janela, altura_janela)
 
+# Define a cor de fundo da janela
+root.configure(bg="#f5b942")
+
 # Mantém a janela aberta
 root.mainloop()
