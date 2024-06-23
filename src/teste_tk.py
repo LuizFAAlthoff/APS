@@ -25,8 +25,18 @@ altura_janela = 600
 # Centraliza a janela na tela
 centralizar_janela(root, largura_janela, altura_janela)
 
-# Define a cor de fundo da janela
-root.configure(bg="#f5b942")
+# Calcula a altura de cada frame
+altura_frame = altura_janela // 3
+
+# Cria os três frames
+frame1 = tk.Frame(root, bg="#FF0000", width=largura_janela, height=altura_frame)
+frame2 = tk.Frame(root, bg="#00FF00", width=largura_janela, height=altura_frame)
+frame3 = tk.Frame(root, bg="#0000FF", width=largura_janela, height=altura_frame)
+
+# Posiciona os frames na janela usando pack
+frame1.pack(fill="both")
+frame2.pack(fill="both")
+frame3.pack(fill="both")
 
 # Mantém a janela aberta
 root.mainloop()
