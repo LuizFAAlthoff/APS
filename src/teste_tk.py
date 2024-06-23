@@ -29,9 +29,9 @@ centralizar_janela(root, largura_janela, altura_janela)
 altura_frame = altura_janela // 3
 
 # Cria os três frames
-frame1 = tk.Frame(root, bg="#FF0000", width=largura_janela, height=altura_frame)
-frame2 = tk.Frame(root, bg="#00FF00", width=largura_janela, height=altura_frame)
-frame3 = tk.Frame(root, bg="#0000FF", width=largura_janela, height=altura_frame)
+frame1 = tk.Frame(root, bg="#f5b942", width=largura_janela, height=altura_frame)
+frame2 = tk.Frame(root, bg="#a5b942", width=largura_janela, height=altura_frame)
+frame3 = tk.Frame(root, bg="#d5b942", width=largura_janela, height=altura_frame)
 
 # Posiciona os frames na janela usando pack
 frame1.pack(fill="both")
@@ -42,9 +42,9 @@ frame3.pack(fill="both")
 largura_subframe = largura_janela // 3
 
 # Cria os três subframes dentro do frame do meio
-subframe1 = tk.Frame(frame2, bg="#FFFFFF", width=largura_subframe, height=altura_frame)
-subframe2 = tk.Frame(frame2, bg="#AAAAAA", width=largura_subframe, height=altura_frame)
-subframe3 = tk.Frame(frame2, bg="#555555", width=largura_subframe, height=altura_frame)
+subframe1 = tk.Frame(frame2, bg="#f5c942", width=largura_subframe*1/5, height=altura_frame)
+subframe2 = tk.Frame(frame2, bg="#a5b942", width=largura_subframe*3/5, height=altura_frame)
+subframe3 = tk.Frame(frame2, bg="#f5a942", width=largura_subframe*1/5, height=altura_frame)
 
 # Posiciona os subframes no frame do meio usando pack com side="left"
 subframe1.pack(side="left", fill="both", expand=True)
