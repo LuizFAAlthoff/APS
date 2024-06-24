@@ -71,7 +71,7 @@ label_numero.pack()
 
 # Adiciona uma imagem no subframe2
 # Carrega a imagem (substitua 'caminho_para_imagem.png' pelo caminho da sua imagem)
-imagem = Image.open("src/cartas/1-amarelo-anil.jpeg")
+imagem = Image.open("cartas/1-amarelo-anil.jpeg")
 imagem = imagem.resize((largura_subframe, altura_frame), Image.ANTIALIAS)
 imagem_tk = ImageTk.PhotoImage(imagem)
 label_imagem = tk.Label(subframe2, image=imagem_tk, bg="#a5b942")
