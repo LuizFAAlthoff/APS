@@ -15,7 +15,7 @@ def carregar_imagens():
         for cor_sec in cor_secundaria:
             for numero in range(1, 3):
                 if cor_prim != cor_sec:
-                    image = Image.open(f'src/cartas/{numero}-{cor_prim}-{cor_sec}.jpeg')
+                    image = Image.open(f'cartas/{numero}-{cor_prim}-{cor_sec}.jpeg')
                     img = image.resize((100, 150))
                     dict_of_cards[f"{numero}-{cor_prim}-{cor_sec}.jpeg"] = ImageTk.PhotoImage(img)
     x=1
