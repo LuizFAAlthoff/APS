@@ -90,6 +90,10 @@ cartas = ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5", "Carta 6", "Car
 canvas = tk.Canvas(frame3, bg="#0000FF", width=largura_janela, height=altura_frame)
 canvas.pack(side="left", fill="both", expand=True)
 
+# Frame interno para adicionar widgets ao canvas
+buttons_frame = tk.Frame(canvas)
+buttons_frame.pack(side="bottom")
+
 # Adiciona botões para cada carta no frame interno, com espaçamento entre eles
 x_position = 10  # Posição inicial dos botões no eixo x
 
