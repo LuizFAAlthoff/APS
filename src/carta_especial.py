@@ -1,4 +1,4 @@
-from APS.src.carta import Carta
+from carta import Carta
 
 
 class CartaEspecial(Carta):

@@ -11,6 +11,7 @@ class Tabuleiro:
         self.__joagadores = []
         self.__primeira_acao = True
         self.__jogador_atual = None
+        self.__local_id = ""
     
     @property
     def ultima_carta(self):
@@ -35,6 +36,10 @@ class Tabuleiro:
     @property
     def jogador_atual(self):
         return self.__jogador_atual
+
+    @property
+    def set_local_id(self):
+        return self.__local_id
     
     @ultima_carta.setter
     def ultima_carta(self, ultima_carta):
@@ -59,5 +64,9 @@ class Tabuleiro:
     @jogador_atual.setter
     def jogador_atual(self, jogador_atual):
         self.__jogador_atual = jogador_atual
+
+    @set_local_id.setter
+    def set_local_id(self, local_id):
+        self.__local_id = local_id
 
     
