@@ -15,8 +15,8 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.window = window.getWindow()
         self.window.title("Rainbow Cards")
         self.bloqueado = False
-        self.tabuleiro = Tabuleiro
         self.start_menu()
+        self.tabuleiro = Tabuleiro()
 
     def criar_tela_principal(self):
         largura_janela = 1280
@@ -115,7 +115,9 @@ class AtorJogadorInterface(DogPlayerInterface):
     #         pass
 
     def receive_start(self, start_status):
-        self.tabuleiro.set_local_id(start_status.get_local_id())
+        #self.tabuleiro.set_local_id(start_status.get_local_id())
+        self.set_canvas()
+        self.tela_partida_design()
     
     def receive_withdrawal_notification(self):
         self.show_screen_disconnect()
@@ -125,28 +127,69 @@ class AtorJogadorInterface(DogPlayerInterface):
         message = start_status.get_message()
         messagebox.showinfo(message=message)
 
-
         if message == 'Partida iniciada':
             jogadores = start_status.get_players()
             id_jogador_local = start_status.get_local_id()
             messagebox.showinfo('esta dentro da funcao start match')
             
-            dict_inicial = self.tabuleiro.comecar_partida(jogadores, id_jogador_local)
+            self.set_canvas()
+            self.tela_partida_design()
+
+    def tela_partida_design(self):
+        imagem_de_fundo = ImageTk.PhotoImage(Image.open("menu_images/rainbow_bg.png"))
+        self.canvas.create_image(0, 0, image=imagem_de_fundo, anchor="nw")
+
+        frame_jogador2 = Frame(self.canvas, bg="#a5b942")
+        frame_jogador2.place(relwidth=0.4, relheight=0.3, relx=0.05, rely=0.0)
+        texto_jogador2 = Label(frame_jogador2, text="Jogador 2\n teste\n 3 cartas", bg="#a5b942")
+        texto_jogador2.pack(pady=10)
+
+        frame_jogador3 = Frame(self.canvas, bg="#a5b942")
+        frame_jogador3.place(relwidth=0.4, relheight=0.3, relx=0.55, rely=0.0)
+        texto_jogador3 = Label(frame_jogador3, text="Jogador 3\n teste\n 5 cartas", bg="#a5b942")
+        texto_jogador3.pack(pady=10)
+
+        frame_contador = Frame(self.canvas, bg="#b5b942")
+        frame_contador.place(relwidth=0.1, relheight=0.2, relx=0.05, rely=0.4)
+        texto_contador = Label(frame_contador, text="Contador +1\n 6", bg="#b5b942")
+        texto_contador.pack(pady=10)
+
+        frame_central = Frame(self.canvas, bg="#b5b942")
+        frame_central.place(relwidth=0.6, relheight=0.3, relx=0.2, rely=0.35)
+
+        frame_botoes = Frame(self.canvas, bg="#b5b942")
+        frame_botoes.place(relwidth=0.1, relheight=0.2, relx=0.85, rely=0.4)
+        botao_comprar = Button(frame_botoes, text="Comprar Carta", command=self.comprar_carta)
+        botao_comprar.place(relx=0.5, rely=0.3, anchor="center")
+        botao_passar_turno = Button(frame_botoes, text="Passar Turno", command=self.passar_turno)
+        botao_passar_turno.place(relx=0.5, rely=0.7, anchor="center")
+
+        frame_cartas = Frame(self.canvas, bg="#c5b942")
+        frame_cartas.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
+
+
+            # dict_inicial = self.__jogo.comecarPartida(jogadores, id_jogador_local)
             # self.__dog_server_interface.send_move(dict_inicial)
 
             # self.__jogo.configurarJogadores()
             # self.__mensagem = self.__jogo.getJogadores()[self.__jogo.getLocalPosition()].getNome()
             # self.start_table()
     
+    def comprar_carta(self):
+        messagebox.showinfo("está no metodo comprar_carta", "Comprou X carta(s)")
+
+    def passar_turno(self):
+        messagebox.showinfo("está no metodo passar_turno", "Passou o turno")
+
     def set_canvas(self): #DEFINE UMA ÁREA RETANGULAR NA TELA PARA MOSTRAR OS COMPONENTES DA INTERFACE
         self.canvas = Canvas(
             self.window,bg = "#ffffff",height = 720,width = 1280,bd = 0,highlightthickness = 0,relief = "ridge")
         self.canvas.place(relx=0.5, rely=0.5, anchor=CENTER)
     
     def create_menu_design(self): #MUDAR NOME DE FUNÇÃO
-        self.background_img = PhotoImage(file = f"src/menu_images/background.png")
+        self.background_img = PhotoImage(file = f"menu_images/background.png")
         background = self.canvas.create_image(0, 0,image=self.background_img,anchor="nw")
-        self.button_menu = PhotoImage(file = f"src/menu_images/img0.png")
+        self.button_menu = PhotoImage(file = f"menu_images/img0.png")
         button_start = self.canvas.create_image(270, 570, image=self.button_menu)
         self.canvas.tag_bind(button_start, "<Button-1>", lambda x: self.start_match())
 
@@ -160,6 +203,14 @@ class AtorJogadorInterface(DogPlayerInterface):
         messagebox.showinfo(message=message)
         self.window.mainloop()
 
+    def show_screen_disconnect(self):
+        # self.__jogo.setFimJogo(True) setter de atributos da classe jogo do flip
+        # self.__jogo.setJogoAbandonado(True) setter de atributos da classe jogo do flip
+        self.set_canvas()
+        self.background_img = PhotoImage(file = f"menu_images/desconexao.png")
+        background = self.canvas.create_image(0, 0,image=self.background_img,anchor="nw")
+        sleep(3)
+        self.window.destroy()
 
     # def load_cards(self):
     #     cor_primaria = ["vermelho", "laranja", "amarelo", "verde", "azul", "anil", "roxo"]
@@ -173,122 +224,3 @@ class AtorJogadorInterface(DogPlayerInterface):
         #             img = image.resize((100, 150))
         #             dict_of_cards[f"{numero}-{cor_primaria}-{cor_secundaria}.jpeg"] = ImageTk.PhotoImage(img)
         #             x=1
-
-    def show_screen_disconnect(self):
-        # self.__jogo.setFimJogo(True) setter de atributos da classe jogo do flip
-        # self.__jogo.setJogoAbandonado(True) setter de atributos da classe jogo do flip
-        self.set_canvas()
-        self.__background_img = PhotoImage(file = f"src/menu_images/desconexao.png")
-        background = self.canvas.create_image(0, 0,image=self.__background_img,anchor="nw")
-        sleep(3)
-        self.window.destroy()
-
-    def tela_principal(self):
-        def centralizar_janela(root, largura_janela, altura_janela):
-            # Obtém a largura e a altura do monitor/tela
-            largura_tela = root.winfo_screenwidth()
-            altura_tela = root.winfo_screenheight()
-
-            # Calcula a posição x e y para centralizar a janela
-            pos_x = (largura_tela // 2) - (largura_janela // 2)
-            pos_y = (altura_tela // 2) - (altura_janela // 2)
-
-            # Define a geometria da janela (largura x altura + posição x + posição y)
-            root.geometry(f"{largura_janela}x{altura_janela}+{pos_x}+{pos_y}")
-
-        
-
-        
-
-        # Função para configurar a barra de rolagem horizontal
-        def configurar_scrollbar(event=None):
-            canvas.configure(scrollregion=canvas.bbox("all"))
-
-        # Cria a instância da janela principal
-        root = Tk()
-
-        # Define o título da janela
-        root.title("Rainbow Cards Partida")
-
-        # Define o tamanho da janela
-        largura_janela = 1280
-        altura_janela = 720
-
-        # Centraliza a janela na tela
-        centralizar_janela(root, largura_janela, altura_janela)
-
-        # Calcula a altura de cada frame
-        altura_frame = altura_janela // 3
-
-        # Cria os três frames
-        frame1 = Frame(root, bg="#f5b942", width=largura_janela, height=altura_frame)
-        frame2 = Frame(root, bg="#a5b942", width=largura_janela, height=altura_frame)
-        frame3 = Frame(root, bg="#d5b942", width=largura_janela, height=altura_frame)
-
-        # Posiciona os frames na janela usando pack
-        frame1.pack(fill="both")
-        frame2.pack(fill="both")
-        frame3.pack(fill="both")
-
-        # Calcula a largura de cada subframe no frame do meio
-        largura_subframe = largura_janela // 3
-
-        # Cria os três subframes dentro do frame do meio
-        subframe1 = Frame(frame2, bg="#f5c942", width=largura_subframe*1/5, height=altura_frame)
-        subframe2 = Frame(frame2, bg="#a5b942", width=largura_subframe*3/5, height=altura_frame)
-        subframe3 = Frame(frame2, bg="#f5a942", width=largura_subframe*1/5, height=altura_frame)
-
-        # Posiciona os subframes no frame do meio usando pack com side="left"
-        subframe1.pack(side="left", fill="both", expand=True)
-        subframe2.pack(side="left", fill="both", expand=True)
-        subframe3.pack(side="left", fill="both", expand=True)
-
-        # Adiciona a palavra "contador" e o número 1 abaixo dela no subframe1
-        label_contador = Label(subframe1, text="contador", bg="#f5c942")
-        label_contador.pack(pady=10)
-        label_numero = Label(subframe1, text="1", bg="#f5c942")
-        label_numero.pack()
-
-        # Adiciona uma imagem no subframe2
-        # Carrega a imagem (substitua 'caminho_para_imagem.png' pelo caminho da sua imagem)
-        imagem = Image.open("cartas/1-amarelo-anil.jpeg")
-        imagem = imagem.resize((largura_subframe, altura_frame), Image.ANTIALIAS)
-        imagem_tk = ImageTk.PhotoImage(imagem)
-        label_imagem = Label(subframe2, image=imagem_tk, bg="#a5b942")
-        label_imagem.pack(expand=True)
-
-        # Adiciona os botões no subframe3
-        btn_comprar = Button(subframe3, text="Comprar Carta", command=comprar_carta)
-        btn_comprar.pack(pady=10)
-        btn_jogada = Button(subframe3, text="Realizar Jogada", command=realizar_jogada)
-        btn_jogada.pack(pady=10)
-
-        # Lista de cartas do jogador
-        cartas = ["Carta 1", "Carta 2", "Carta 3", "Carta 4", "Carta 5", "Carta 6", "Carta 7", "Carta 8", "Carta 9", "Carta 10"]
-
-        # Cria um canvas no frame de baixo
-        canvas = Canvas(frame3, bg="#0000FF", width=largura_janela, height=altura_frame)
-        canvas.pack(side="left", fill="both", expand=True)
-
-        # Frame interno para adicionar widgets ao canvas
-        buttons_frame = Frame(canvas)
-        buttons_frame.pack(side="bottom")
-
-        # Adiciona botões para cada carta no frame interno, com espaçamento entre eles
-        x_position = 10  # Posição inicial dos botões no eixo x
-
-        for carta in cartas:
-            btn = Button(canvas, text=carta, padx=50, pady=80)
-            btn.pack(side="left", padx=10, pady=10, anchor="center")
-            x_position += 100
-
-        # Adiciona uma barra de rolagem horizontal ao canvas
-        scrollbar = Scrollbar(frame3, orient="horizontal", command=canvas.xview)
-        scrollbar.pack(side="bottom", fill="x")
-
-        # Configura o canvas para usar a barra de rolagem
-        canvas.configure(xscrollcommand=scrollbar.set)
-        canvas.bind("<Configure>", lambda event, canvas=canvas: configurar_scrollbar())
-
-        # Mantém a janela aberta
-        root.mainloop()
