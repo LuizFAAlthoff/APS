@@ -69,4 +69,34 @@ class Tabuleiro:
     def set_local_id(self, local_id):
         self.__local_id = local_id
 
+    def comecar_partida(self, jogadores: list, id_jogador_local: int):
+        self.set_local_id(id_jogador_local)
+        self.criar_jogadores(jogadores)
+        return self.transform_play_to_dict("init")
+
+    def criar_jogadores(self, jogadores):
+        for i, jogador in enumerate(jogadores):
+            mao = self.darCartasIniciais()
+            self.__jogadores[i] = Jogador(id=jogador[1], nome=jogador[0], mao=mao)
+
+    def transform_play_to_dict(self, tipo_jogada) -> dict:
+        jogada = {}
+
+        if tipo_jogada == "init":
+            jogada["tipo"] = "init"
+            jogada["match_status"] = "progress"
+            jogada["baralho"] = self.getMesa().getBaralho().to_json()
+            jogada["jogador_1"] = self.__jogadores[0].to_json()
+            jogada["jogador_2"] = self.__jogadores[1].to_json()
+            jogada["jogador_3"] = self.__jogadores[2].to_json()
+            jogada["jogador_atual"] = self.getJogadorAtual()
+            jogada["mesa"] = self.getMesa().getUltimaCarta().to_json()
+
+        return jogada
     
+    def darCartasIniciais(self) -> list:
+        mao = []
+        for _ in range(7):
+            carta = self.getMesa().getBaralho().getCartas().pop()
+            mao.append(carta)
+        return mao

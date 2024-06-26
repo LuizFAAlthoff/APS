@@ -15,8 +15,8 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.window = window.getWindow()
         self.window.title("Rainbow Cards")
         self.bloqueado = False
-        self.start_menu()
         self.tabuleiro = Tabuleiro
+        self.start_menu()
 
     def criar_tela_principal(self):
         largura_janela = 1280
@@ -131,7 +131,7 @@ class AtorJogadorInterface(DogPlayerInterface):
             id_jogador_local = start_status.get_local_id()
             messagebox.showinfo('esta dentro da funcao start match')
             
-            # dict_inicial = self.__jogo.comecarPartida(jogadores, id_jogador_local)
+            dict_inicial = self.tabuleiro.comecar_partida(jogadores, id_jogador_local)
             # self.__dog_server_interface.send_move(dict_inicial)
 
             # self.__jogo.configurarJogadores()
