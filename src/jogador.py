@@ -1,10 +1,15 @@
 
 
 class Jogador:
-    def __init__(self, nome, mao_cartas):
+    def __init__(self, id: str, nome: str, mao: list)
+        self.__id = id
         self.__nome = nome
-        self.__mao_cartas = mao_cartas
+        self.__mao = mao
 
+    @property
+    def id(self):
+        return self.__id
+    
     @property
     def nome(self):
         return self.__nome
@@ -12,6 +17,10 @@ class Jogador:
     @property
     def mao_cartas(self):
         return self.__mao_cartas
+    
+    @id.setter
+    def id(self, id):
+        self.__id = id
     
     @nome.setter
     def nome(self, nome):

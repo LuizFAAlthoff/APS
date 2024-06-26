@@ -131,12 +131,13 @@ class AtorJogadorInterface(DogPlayerInterface):
             jogadores = start_status.get_players()
             id_jogador_local = start_status.get_local_id()
             messagebox.showinfo('esta dentro da funcao start match')
+            dict_inicial = self.tabuleiro.comecar_partida(jogadores, id_jogador_local)
             
             self.set_canvas()
             self.tela_partida_design()
 
     def tela_partida_design(self):
-        imagem_de_fundo = ImageTk.PhotoImage(Image.open("menu_images/rainbow_bg.png"))
+        imagem_de_fundo = ImageTk.PhotoImage(Image.open("src/menu_images/rainbow_bg.png"))
         self.canvas.create_image(0, 0, image=imagem_de_fundo, anchor="nw")
 
         frame_jogador2 = Frame(self.canvas, bg="#a5b942")
@@ -187,9 +188,9 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.canvas.place(relx=0.5, rely=0.5, anchor=CENTER)
     
     def create_menu_design(self): #MUDAR NOME DE FUNÇÃO
-        self.background_img = PhotoImage(file = f"menu_images/background.png")
+        self.background_img = PhotoImage(file = f"src/menu_images/background.png")
         background = self.canvas.create_image(0, 0,image=self.background_img,anchor="nw")
-        self.button_menu = PhotoImage(file = f"menu_images/img0.png")
+        self.button_menu = PhotoImage(file = f"src/menu_images/img0.png")
         button_start = self.canvas.create_image(270, 570, image=self.button_menu)
         self.canvas.tag_bind(button_start, "<Button-1>", lambda x: self.start_match())
 
@@ -207,7 +208,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         # self.__jogo.setFimJogo(True) setter de atributos da classe jogo do flip
         # self.__jogo.setJogoAbandonado(True) setter de atributos da classe jogo do flip
         self.set_canvas()
-        self.background_img = PhotoImage(file = f"menu_images/desconexao.png")
+        self.background_img = PhotoImage(file = f"src/menu_images/desconexao.png")
         background = self.canvas.create_image(0, 0,image=self.background_img,anchor="nw")
         sleep(3)
         self.window.destroy()

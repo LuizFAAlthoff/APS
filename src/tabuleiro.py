@@ -1,14 +1,16 @@
 from jogador import Jogador
 from carta_especial import CartaEspecial
 from carta_normal import CartaNormal
+import random
 
 
 class Tabuleiro:
     def __init__(self):
         self.__ultima_carta = None
         self.__lista_cartas = []
+        self.criar_baralho()
         self.__contador_cartas_mais_um = 0
-        self.__joagadores = []
+        self.__joagadores = [0, 0, 0]
         self.__primeira_acao = True
         self.__jogador_atual = None
         self.__local_id = ""
@@ -38,7 +40,7 @@ class Tabuleiro:
         return self.__jogador_atual
 
     @property
-    def set_local_id(self):
+    def local_id(self):
         return self.__local_id
     
     @ultima_carta.setter
@@ -65,9 +67,24 @@ class Tabuleiro:
     def jogador_atual(self, jogador_atual):
         self.__jogador_atual = jogador_atual
 
-    @set_local_id.setter
-    def set_local_id(self, local_id):
+    @local_id.setter
+    def local_id(self, local_id):
         self.__local_id = local_id
+
+    def criar_baralho(self):
+        cor_primaria = ["vermelho", "laranja", "amarelo", "verde", "azul", "anil", "roxo"]
+        cor_secundaria = ["roxo",  "anil", "azul", "verde", "amarelo", "laranja", "vermelho"]
+
+        for cor_primaria in cor_primaria:
+            for cor_secundaria in cor_secundaria:
+                for numero in range(1, 3):
+                    if cor_primaria != cor_secundaria:
+                        self.__lista_cartas.append(CartaNormal(cor_primaria, cor_secundaria, numero))
+        for numero in range(1, 7):
+            self.__lista_cartas.append(CartaEspecial('preto', 'mais-um'))
+            self.__lista_cartas.append(CartaEspecial('preto', 'block'))
+            
+
 
     def comecar_partida(self, jogadores: list, id_jogador_local: int):
         self.set_local_id(id_jogador_local)
@@ -76,7 +93,7 @@ class Tabuleiro:
 
     def criar_jogadores(self, jogadores):
         for i, jogador in enumerate(jogadores):
-            mao = self.darCartasIniciais()
+            mao = self.dar_cartas_iniciais()
             self.__jogadores[i] = Jogador(id=jogador[1], nome=jogador[0], mao=mao)
 
     def transform_play_to_dict(self, tipo_jogada) -> dict:
@@ -94,11 +111,12 @@ class Tabuleiro:
 
         return jogada
     
-    def darCartasIniciais(self) -> list:
+    def dar_cartas_iniciais(self) -> list:
         mao = []
         for _ in range(7):
-            carta = self.getMesa().getBaralho().getCartas().pop()
+            carta = random.choice(self.__lista_cartas)
             mao.append(carta)
         return mao
+    
     def set_local_id(self, local_id):
         self.__local_id = local_id
