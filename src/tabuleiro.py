@@ -69,4 +69,5 @@ class Tabuleiro:
     def set_local_id(self, local_id):
         self.__local_id = local_id
 
-    
+    def set_local_id(self, local_id):
+        self.__local_id = local_id
