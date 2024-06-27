@@ -157,16 +157,30 @@ class AtorJogadorInterface(DogPlayerInterface):
 
         frame_central = Frame(self.canvas, bg="#b5b942")
         frame_central.place(relwidth=0.6, relheight=0.3, relx=0.2, rely=0.35)
+        label_carta = Label(frame_central)
+        label_carta.pack(expand=True)
 
         frame_botoes = Frame(self.canvas, bg="#b5b942")
         frame_botoes.place(relwidth=0.1, relheight=0.2, relx=0.85, rely=0.4)
         botao_comprar = Button(frame_botoes, text="Comprar Carta", command=self.comprar_carta)
-        botao_comprar.place(relx=0.5, rely=0.3, anchor="center")
+        botao_comprar.place(relx=0.5, rely=0.2, anchor="center")
         botao_passar_turno = Button(frame_botoes, text="Passar Turno", command=self.passar_turno)
-        botao_passar_turno.place(relx=0.5, rely=0.7, anchor="center")
+        botao_passar_turno.place(relx=0.5, rely=0.5, anchor="center")
+        botao_carta_aleatoria = Button(frame_botoes, text="Carta Aleatória", command=self.show_random_card(label_carta))
+        botao_carta_aleatoria.place(relx=0.5, rely=0.8, anchor="center")
 
         frame_cartas = Frame(self.canvas, bg="#c5b942")
         frame_cartas.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
+
+    def show_random_card(self, label_carta: Label):
+        carta = self.tabuleiro.get_random_card()
+        image_path = carta.get_card_image()
+        image = Image.open(image_path)
+        image = image.resize((256//3, 345//3), Image.ANTIALIAS)
+        photo = ImageTk.PhotoImage(image)
+        label_carta.config(image=photo)
+        label_carta.image = photo
+
 
 
             # dict_inicial = self.__jogo.comecarPartida(jogadores, id_jogador_local)

@@ -1,7 +1,7 @@
 
 
 class Jogador:
-    def __init__(self, id: str, nome: str, mao: list)
+    def __init__(self, id: str, nome: str, mao: list):
         self.__id = id
         self.__nome = nome
         self.__mao = mao

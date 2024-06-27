@@ -22,3 +22,6 @@ class CartaNormal(Carta):
     @numero.setter
     def numero(self, numero):
         self.__numero = numero
+
+    def get_card_image(self):
+        return f"src/cartas/{self.numero}-{self.cor_primaria}-{self.cor_secundaria}.jpeg"

@@ -20,3 +20,6 @@ class CartaEspecial(Carta):
     @ja_satisfeita.setter
     def ja_satisfeita(self, ja_satisfeita):
         self.__ja_satisfeita = ja_satisfeita
+    
+    def get_card_image(self):
+        return f"src/cartas/{self.tipo}.jpeg"
