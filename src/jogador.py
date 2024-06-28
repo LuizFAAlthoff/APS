@@ -15,8 +15,8 @@ class Jogador:
         return self.__nome
     
     @property
-    def mao_cartas(self):
-        return self.__mao_cartas
+    def mao(self):
+        return self.__mao
     
     @id.setter
     def id(self, id):
@@ -26,9 +26,9 @@ class Jogador:
     def nome(self, nome):
         self.__nome = nome
         
-    @mao_cartas.setter
-    def mao_cartas(self, mao_cartas):
-        self.__mao_cartas = mao_cartas
+    @mao.setter
+    def mao(self, mao):
+        self.__mao = mao
     
     ## fazer método Initialize
     

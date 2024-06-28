@@ -10,7 +10,7 @@ class Tabuleiro:
         self.__lista_cartas = []
         self.criar_baralho()
         self.__contador_cartas_mais_um = 0
-        self.__jogadores = [0, 0, 0]
+        self.__jogadores = []
         self.__primeira_acao = True
         self.__jogador_atual = None
         self.__local_id = ""
@@ -29,7 +29,7 @@ class Tabuleiro:
     
     @property
     def jogadores(self):
-        return self.__joagadores
+        return self.__jogadores
     
     @property
     def primeira_acao(self):
@@ -57,7 +57,7 @@ class Tabuleiro:
     
     @jogadores.setter
     def jogadores(self, jogadores):
-        self.__joagadores = jogadores
+        self.__jogadores = jogadores
     
     @primeira_acao.setter
     def primeira_acao(self, primeira_acao):
@@ -100,6 +100,8 @@ class Tabuleiro:
         for i, jogador in enumerate(jogadores):
             mao = self.dar_cartas_iniciais()
             self.__jogadores[i] = Jogador(id=jogador[1], nome=jogador[0], mao=mao)
+            x=1
+        x=1
 
     def transform_play_to_dict(self, tipo_jogada) -> dict:
         jogada = {}
@@ -121,6 +123,7 @@ class Tabuleiro:
         for _ in range(7):
             carta = random.choice(self.__lista_cartas)
             mao.append(carta)
+        x=1
         return mao
     
     def set_local_id(self, local_id):
