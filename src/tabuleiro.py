@@ -6,7 +6,7 @@ import random
 class Tabuleiro:
     def __init__(self,  baralho: Baralho):
         self.__ultima_carta = None
-        self.__lista_cartas = []
+        # self.__lista_cartas = []
         self.__baralho = baralho
         self.__contador_cartas_mais_um = 0
         self.__jogadores = [0, 0, 0]
@@ -95,15 +95,23 @@ class Tabuleiro:
         if tipo_jogada == "init":
             jogada["tipo"] = "init"
             jogada["match_status"] = "progress"
-            teste = self.get_baralho
-            jogada["baralho"] = teste.to_json()
-            jogada["jogador_1"] = self.__jogadores[0].to_json()
-            jogada["jogador_2"] = self.__jogadores[1].to_json()
-            # jogada["jogador_3"] = self.__jogadores[2].to_json() #adiconar o terceiro jogador, por enquanto ta com 2 pq é mais facil de debugar
-            jogada["jogador_atual"] = self.__jogador_atual
-            # jogada["mesa"] = self.getMesa().getUltimaCarta().to_json()
+            jogada["baralho"] = self.__baralho.to_dict()
+            jogada["jogador_atual"] = self.__jogador_atual #verificar se precisa usar to_dict()
+            if self.ultima_carta is not None:
+                jogada["ultima_carta_tabuleiro"] = self.__ultima_carta.to_dict()
+            else:
+                jogada["ultima_carta_tabuleiro"] = self.__ultima_carta
+            jogada["contador_cartas_mais_um"] = self.__contador_cartas_mais_um
+            jogada["primeira_acao"] = self.__primeira_acao
+            jogada["jogador_1"] = self.__jogadores[0].to_dict()
+            jogada["jogador_2"] = self.__jogadores[1].to_dict()
+            # jogada["jogador_3"] = self.__jogadores[2].to_json() #adiconar o
+            #  terceiro jogador, por enquanto ta com 2 pq é mais facil de debugar
             x=1
         return jogada
+    
+        self.__jogador_atual = None
+        self.__local_id = ""
     
     def dar_cartas_iniciais(self) -> list:
         mao = []

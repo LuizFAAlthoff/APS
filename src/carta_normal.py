@@ -6,7 +6,10 @@ class CartaNormal(Carta):
         super().__init__(cor_primaria)
         self.__cor_secundaria = cor_secundaria
         self.__numero = numero
-    
+
+    @property
+    def cor_primaria(self):
+        return super().cor_primaria
     @property
     def cor_secundaria(self):
         return self.__cor_secundaria
@@ -25,3 +28,8 @@ class CartaNormal(Carta):
 
     def get_card_image(self):
         return f"src/cartas/{self.numero}-{self.cor_primaria}-{self.cor_secundaria}.jpeg"
+    
+    def to_dict(self):
+        return {'cor_primaria': self.cor_primaria,
+                'cor_secundaria': self.cor_secundaria,
+                'numero': self.numero}

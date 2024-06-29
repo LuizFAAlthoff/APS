@@ -1,3 +1,4 @@
+from carta_normal import CartaNormal
 
 
 class Jogador:
@@ -40,3 +41,28 @@ class Jogador:
     
     def get_cartas_mao(self, index: int):
         return self.mao_cartas[index]
+    
+    def to_dict(self):
+        jogador = {
+                'id': self.id,
+                'nome': self.nome,
+                'mao': []
+            }
+        for carta in self.__mao:
+            carta_dict = {}
+            if isinstance(carta, CartaNormal): 
+                carta_dict = {
+                    'cor_primaria': carta.cor_primaria,
+                    'cor_secundaria': carta.cor_secundaria,
+                    'numero': carta.numero
+                }
+            else:
+                carta_dict = {
+                    'cor_primaria': carta.cor_primaria,
+                    'tipo': carta.tipo,
+                    'ja_satisfeita': carta.ja_satisfeita
+                }
+            jogador['mao'].append(carta_dict)
+
+            
+        return jogador

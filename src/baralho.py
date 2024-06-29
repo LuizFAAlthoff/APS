@@ -1,6 +1,5 @@
 from carta_normal import CartaNormal
 from carta_especial import CartaEspecial
-import json
 
 
 class Baralho():
@@ -17,12 +16,6 @@ class Baralho():
     def ultima_carta(self, cartas):
         self.__cartas = cartas
 
-
-    def to_json(self) -> dict:
-        a =  json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
-        json_acceptable_string = a.replace("'", "\"")
-        json_ = json.loads(json_acceptable_string)
-        return json_
 
     def darCarta(self):
         return self.__cartas.pop(0)
@@ -50,3 +43,21 @@ class Baralho():
         self.__cartas.extend(lista_cartas_comuns)
         self.__cartas.extend(lista_cartas_especiais)
 
+    def to_dict(self):
+        baralho = {'cartas': []}
+        for carta in self.__cartas:
+            carta_dict = {}
+            if isinstance(carta, CartaNormal): 
+                carta_dict = {
+                    'cor_primaria': carta.cor_primaria,
+                    'cor_secundaria': carta.cor_secundaria,
+                    'numero': carta.numero
+                }
+            else:
+                carta_dict = {
+                    'cor_primaria': carta.cor_primaria,
+                    'tipo': carta.tipo,
+                    'ja_satisfeita': carta.ja_satisfeita
+                }
+            baralho['cartas'].append(carta_dict)
+        return baralho

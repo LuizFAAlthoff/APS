@@ -15,6 +15,9 @@ class CartaEspecial(Carta):
     def ja_satisfeita(self):
         return self.__ja_satisfeita
     
+    @property
+    def cor_primaria(self):
+        return super().cor_primaria
     ## não fiz setter do atributo tipo pois ele nunca será alterado
     
     @ja_satisfeita.setter
@@ -23,3 +26,8 @@ class CartaEspecial(Carta):
     
     def get_card_image(self):
         return f"src/cartas/{self.tipo}.jpeg"
+    
+    def to_dict(self):
+        return {'cor_primaria': self.cor_primaria,
+                'tipo': self.tipo,
+                'ja_satisfeita': self.ja_satisfeita}
