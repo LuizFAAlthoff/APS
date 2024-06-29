@@ -7,6 +7,7 @@ from dog.dog_interface import DogPlayerInterface
 from PIL import Image, ImageTk
 from time import sleep
 from tabuleiro import Tabuleiro
+from baralho import Baralho
 
 
 class AtorJogadorInterface(DogPlayerInterface):
@@ -15,7 +16,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.window = window.getWindow()
         self.window.title("Rainbow Cards")
         self.bloqueado = False
-        self.tabuleiro  = Tabuleiro()
+        self.tabuleiro  = Tabuleiro(Baralho())
         self.start_menu()
         
         # self.tabuleiro.comecar_partida(['cu'], 764857645)
@@ -133,7 +134,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         if message == 'Partida iniciada':
             jogadores = start_status.get_players()
             id_jogador_local = start_status.get_local_id()
-            dict_inicial =  self.tabuleiro .comecar_partida(jogadores, id_jogador_local)
+            dict_inicial =  self.tabuleiro.comecar_partida(jogadores, id_jogador_local)
             self.__dog_server_interface.send_move(dict_inicial)
             # self.__jogo.configurarJogadores()
             # self.__mensagem = self.__jogo.getJogadores()[self.__jogo.getLocalPosition()].getNome()

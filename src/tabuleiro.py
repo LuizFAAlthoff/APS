@@ -1,16 +1,15 @@
 from jogador import Jogador
-from carta_especial import CartaEspecial
-from carta_normal import CartaNormal
+from baralho import Baralho
 import random
 
 
 class Tabuleiro:
-    def __init__(self):
+    def __init__(self,  baralho: Baralho):
         self.__ultima_carta = None
         self.__lista_cartas = []
-        self.criar_baralho()
+        self.__baralho = baralho
         self.__contador_cartas_mais_um = 0
-        self.__jogadores = []
+        self.__jogadores = [0, 0, 0]
         self.__primeira_acao = True
         self.__jogador_atual = None
         self.__local_id = ""
@@ -43,6 +42,10 @@ class Tabuleiro:
     def local_id(self):
         return self.__local_id
     
+    @property
+    def baralho(self):
+        return self.__baralho
+    
     @ultima_carta.setter
     def ultima_carta(self, ultima_carta):
         self.__ultima_carta = ultima_carta
@@ -71,24 +74,9 @@ class Tabuleiro:
     def local_id(self, local_id):
         self.__local_id = local_id
 
-    def criar_baralho(self):
-        cores_primaria = ["vermelho", "laranja", "amarelo", "verde", "azul", "anil", "roxo"]
-        cores_secundaria = ["roxo",  "anil", "azul", "verde", "amarelo", "laranja", "vermelho"]
-        lista_cartas_comuns = []
-        lista_cartas_especiais = []
-
-        for cor_primaria in cores_primaria:
-            for cor_secundaria in cores_secundaria:
-                for numero in range(1, 4):
-                    if cor_primaria != cor_secundaria:
-                        lista_cartas_comuns.append(CartaNormal(cor_primaria, cor_secundaria, numero))
-                        #print("carta criada: ", cor_primaria, cor_secundaria, numero)
-        for numero in range(7):
-            lista_cartas_especiais.append(CartaEspecial('preto', 'mais-um'))
-            lista_cartas_especiais.append(CartaEspecial('preto', 'block'))
-        
-        self.__lista_cartas.extend(lista_cartas_comuns)
-        self.__lista_cartas.extend(lista_cartas_especiais)
+    @baralho.setter
+    def baralho(self, baralho):
+        self.baralho = baralho
 
 
     def comecar_partida(self, jogadores: list, id_jogador_local: int):
@@ -100,28 +88,27 @@ class Tabuleiro:
         for i, jogador in enumerate(jogadores):
             mao = self.dar_cartas_iniciais()
             self.__jogadores[i] = Jogador(id=jogador[1], nome=jogador[0], mao=mao)
-            x=1
-        x=1
+
 
     def transform_play_to_dict(self, tipo_jogada) -> dict:
         jogada = {}
-
         if tipo_jogada == "init":
             jogada["tipo"] = "init"
             jogada["match_status"] = "progress"
-            jogada["baralho"] = self.getMesa().getBaralho().to_json()
+            teste = self.get_baralho
+            jogada["baralho"] = teste.to_json()
             jogada["jogador_1"] = self.__jogadores[0].to_json()
             jogada["jogador_2"] = self.__jogadores[1].to_json()
-            jogada["jogador_3"] = self.__jogadores[2].to_json()
-            jogada["jogador_atual"] = self.getJogadorAtual()
-            jogada["mesa"] = self.getMesa().getUltimaCarta().to_json()
-
+            # jogada["jogador_3"] = self.__jogadores[2].to_json() #adiconar o terceiro jogador, por enquanto ta com 2 pq é mais facil de debugar
+            jogada["jogador_atual"] = self.__jogador_atual
+            # jogada["mesa"] = self.getMesa().getUltimaCarta().to_json()
+            x=1
         return jogada
     
     def dar_cartas_iniciais(self) -> list:
         mao = []
         for _ in range(7):
-            carta = random.choice(self.__lista_cartas)
+            carta = random.choice(self.get_baralho().get_cartas())
             mao.append(carta)
         x=1
         return mao
@@ -131,3 +118,7 @@ class Tabuleiro:
 
     def get_random_card(self):
         return random.choice(self.__lista_cartas)
+    
+    def get_baralho(self) -> Baralho:
+        x = self.__baralho
+        return self.__baralho
