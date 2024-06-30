@@ -9,10 +9,9 @@ from carta_normal import CartaNormal
 class Tabuleiro:
     def __init__(self,  baralho: Baralho):
         self.__ultima_carta = None
-        # self.__lista_cartas = []
         self.__baralho = baralho
         self.__contador_cartas_mais_um = 0
-        self.__jogadores = [0, 0] # adicionar mais um 0 
+        self.__jogadores = [0, 0, 0]
         self.__jogador_local = 0
         self.__jogador_dois = 0
         self.__jogador_tres = 0

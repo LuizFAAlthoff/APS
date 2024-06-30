@@ -108,7 +108,6 @@ class AtorJogadorInterface(DogPlayerInterface):
         if a_move["type"] == "init":
             print(a_move)
             self.tabuleiro.atualizar_jogadores(a_move)
-            self.set_canvas()
             self.tela_partida_design()
             # regra para atualizar o tabuleiro dos jogadores 
 
@@ -126,7 +125,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.show_screen_disconnect()
     
     def start_match(self):
-        start_status = self.__dog_server_interface.start_match(2)
+        start_status = self.__dog_server_interface.start_match(3)
         message = start_status.get_message()
         messagebox.showinfo(message=message)
 
@@ -137,7 +136,6 @@ class AtorJogadorInterface(DogPlayerInterface):
             self.__dog_server_interface.send_move(dict_inicial)
             # self.__jogo.configurarJogadores()
             # self.__mensagem = self.__jogo.getJogadores()[self.__jogo.getLocalPosition()].getNome()
-            
             self.set_canvas()
             self.tela_partida_design()
             x=1
@@ -151,15 +149,15 @@ class AtorJogadorInterface(DogPlayerInterface):
         texto_jogador2 = Label(frame_jogador2, text="Jogador 2\n teste\n 3 cartas", bg="#a5b942")
         texto_jogador2.pack(pady=10)
 
+        frame_jogador_local = Frame(self.canvas, bg="#a5b942")
+        frame_jogador_local.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
+        label_jogador_local = Label(frame_jogador_local, text="Jogador Local\n teste\n 5 cartas", bg="#a5b942")
+        label_jogador_local.pack(pady=10)
+
         frame_jogador3 = Frame(self.canvas, bg="#a5b942")
         frame_jogador3.place(relwidth=0.4, relheight=0.3, relx=0.55, rely=0.0)
         texto_jogador3 = Label(frame_jogador3, text="Jogador 3\n teste\n 5 cartas", bg="#a5b942")
         texto_jogador3.pack(pady=10)
-
-        frame_jogador_local = Frame(self.canvas, bg="#a5b942")
-        frame_jogador_local.place(relwidth=0.4, relheight=0.3, relx=0.55, rely=0.0)
-        texto_jogador_local = Label(frame_jogador3, text="Jogador 1\n teste\n 5 cartas", bg="#a5b942")
-        texto_jogador_local.pack(pady=10)
 
         frame_contador = Frame(self.canvas, bg="#b5b942")
         frame_contador.place(relwidth=0.1, relheight=0.2, relx=0.05, rely=0.4)
@@ -168,7 +166,12 @@ class AtorJogadorInterface(DogPlayerInterface):
 
         frame_central = Frame(self.canvas, bg="#b5b942")
         frame_central.place(relwidth=0.6, relheight=0.3, relx=0.2, rely=0.35)
-        label_carta = Label(frame_central) #colocar ultima carta tabuleiro
+
+        # Adiciona uma imagem no subframe2
+        # Carrega a imagem (substitua 'caminho_para_imagem.png' pelo caminho da sua imagem)
+        imagem = Image.open("src/cartas/1-amarelo-anil.jpeg")
+        imagem_tk = ImageTk.PhotoImage(imagem)
+        label_carta = Label(frame_central, image=imagem_tk)
         label_carta.pack(expand=True)
 
         frame_botoes = Frame(self.canvas, bg="#b5b942")
@@ -179,9 +182,6 @@ class AtorJogadorInterface(DogPlayerInterface):
         botao_passar_turno.place(relx=0.5, rely=0.5, anchor="center")
         botao_carta_aleatoria = Button(frame_botoes, text="Carta Aleatória")
         botao_carta_aleatoria.place(relx=0.5, rely=0.8, anchor="center")
-
-        frame_cartas = Frame(self.canvas, bg="#c5b942")
-        frame_cartas.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
 
         self.adiciona_carta_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_local], frame_jogador_local)
         self.adiciona_carta_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_dois], frame_jogador2)
