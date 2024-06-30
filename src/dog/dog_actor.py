@@ -19,6 +19,7 @@ class DogActor:
         return self.proxy.start_match(number_of_players)
 
     def send_move(self, move):
+        x=1
         self.proxy.send_move(move)
 
     def receive_start(self, start_status):
