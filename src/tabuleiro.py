@@ -128,9 +128,9 @@ class Tabuleiro:
                     self.jogador_tres = i
         self.jogador_atual = self.local_id
 
-    def atualizar_jogadores(self, jogadores):
-        self.jogadores = jogadores
-        for i, jogador in enumerate(jogadores):
+    def atualizar_posicoes_jogadores(self):
+        for i, jogador in enumerate(self.jogadores):
+            x=1
             if jogador.id == self.local_id:
                 self.jogador_local = i
             else:
@@ -140,27 +140,27 @@ class Tabuleiro:
                     self.jogador_tres = i
         self.jogador_atual = self.local_id
 
-    def transforma_move_para_jogada(self, a_move):
+    def atualizar_jogadores(self, a_move):
         x = 0
         print(a_move)
-        for jogador in a_move["jogadores"]:
+        for i, jogador in enumerate(a_move["jogadores"]):
             cartas_jogador = []
-            for carta in jogador.mao:
+            for carta in jogador['mao']:
                 if carta['cor_primaria'] == 'preto':
                     carta_epecial = CartaEspecial(carta['cor_primaria'], carta['tipo'])
                     carta_epecial.ja_satisfeita = carta['ja_satisfeita']
                     cartas_jogador.append(carta_epecial)
                 else:
                     carta_normal = CartaNormal(carta['cor_primaria'],carta['cor_secundaria'], carta['numero'])
-                    carta_normal.ja_satisfeita = carta['ja_satisfeita']
                     cartas_jogador.append(carta_normal)
-            self.jogadores.append(Jogador(jogador.id, jogador.nome, cartas_jogador))
+            self.jogadores[i] = (Jogador(jogador['id'], jogador['nome'], cartas_jogador))
+        self.atualizar_posicoes_jogadores()
 
 
     def transforma_jogada_para_move(self, tipo_jogada) -> dict:
         jogada = {}
         if tipo_jogada == "init":
-            jogada["tipo"] = "init"
+            jogada["type"] = "init"
             jogada["match_status"] = "progress"
             jogada["baralho"] = self.__baralho.to_dict()
             jogada["jogador_atual"] = self.__jogador_atual

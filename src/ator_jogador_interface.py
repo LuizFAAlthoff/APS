@@ -107,8 +107,7 @@ class AtorJogadorInterface(DogPlayerInterface):
     def receive_move(self, a_move: dict):
         if a_move["type"] == "init":
             print(a_move)
-            self.tabuleiro.transforma_move_para_jogada(a_move)
-            self.tabuleiro.atualizar_jogadores()
+            self.tabuleiro.atualizar_jogadores(a_move)
             self.set_canvas()
             self.tela_partida_design()
             # regra para atualizar o tabuleiro dos jogadores 
