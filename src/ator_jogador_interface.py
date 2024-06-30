@@ -8,6 +8,8 @@ from PIL import Image, ImageTk
 from time import sleep
 from tabuleiro import Tabuleiro
 from baralho import Baralho
+from carta_especial import CartaEspecial
+from carta_normal import CartaNormal
 
 
 class AtorJogadorInterface(DogPlayerInterface):
@@ -17,6 +19,8 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.window.title("Rainbow Cards")
         self.bloqueado = False
         self.tabuleiro  = Tabuleiro(Baralho())
+        self.dict_cards = {}
+        self.criar_tkinter_images()
         self.start_menu()
         
         # self.tabuleiro.comecar_partida(['cu'], 764857645)
@@ -102,7 +106,7 @@ class AtorJogadorInterface(DogPlayerInterface):
     def receive_start(self, start_status):
         self.tabuleiro.set_local_id(start_status.get_local_id())
         self.set_canvas()
-        self.tela_partida_design()
+        # self.tela_partida_design()
 
     def receive_move(self, a_move: dict):
         if a_move["type"] == "init":
@@ -167,11 +171,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         frame_central = Frame(self.canvas, bg="#b5b942")
         frame_central.place(relwidth=0.6, relheight=0.3, relx=0.2, rely=0.35)
 
-        # Adiciona uma imagem no subframe2
-        # Carrega a imagem (substitua 'caminho_para_imagem.png' pelo caminho da sua imagem)
-        imagem = Image.open("src/cartas/1-amarelo-anil.jpeg")
-        imagem_tk = ImageTk.PhotoImage(imagem)
-        label_carta = Label(frame_central, image=imagem_tk)
+        label_carta = Label(frame_central, image=self.dict_cards['1-amarelo-anil'])
         label_carta.pack(expand=True)
 
         frame_botoes = Frame(self.canvas, bg="#b5b942")
@@ -187,20 +187,17 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.adiciona_carta_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_dois], frame_jogador2)
         self.adiciona_carta_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_tres], frame_jogador3)
 
-            # dict_inicial = self.__jogo.comecarPartida(jogadores, id_jogador_local)
-            # self.__dog_server_interface.send_move(dict_inicial)
-
-            # self.__jogo.configurarJogadores()
-            # self.__mensagem = self.__jogo.getJogadores()[self.__jogo.getLocalPosition()].getNome()
-            # self.start_table()
     
     def adiciona_carta_ao_jogador_design(self, jogador, frame):
-        x=1
-        if jogador != 0:
-            cartas_mao = jogador.mao 
-            for carta in cartas_mao:
-                btn = Button(frame, text=carta, padx=50, pady=80)
-                btn.pack(side="left", padx=10, pady=10, anchor="center")
+        cartas_mao = jogador.mao 
+        #verificar se jogador.id é o jogador local para colocar imagem das costas da carta para J2 e J3
+        for carta in cartas_mao:
+            if carta.cor_primaria == 'preto':
+                imagem = f'{carta.tipo}'
+            else:
+                imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
+            btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)
+            btn.pack(side="left", padx=10, pady=10, anchor="center")
     
 
     def comprar_carta(self):
@@ -241,15 +238,13 @@ class AtorJogadorInterface(DogPlayerInterface):
         sleep(3)
         self.window.destroy()
 
-    # def load_cards(self):
-    #     cor_primaria = ["vermelho", "laranja", "amarelo", "verde", "azul", "anil", "roxo"]
-    #     cor_secundaria = ["roxo",  "anil", "azul", "verde", "amarelo", "laranja", "vermelho"]
-    #     dict_of_cards = {}
-
-        # for cor_primaria in cor_primaria:
-        #     for cor_secundaria in cor_secundaria:
-        #         for numero in range(1, 3):
-        #             image = Image.open(f'src/cartas/{numero}-{cor_primaria}-{cor_secundaria}.jpeg')
-        #             img = image.resize((100, 150))
-        #             dict_of_cards[f"{numero}-{cor_primaria}-{cor_secundaria}.jpeg"] = ImageTk.PhotoImage(img)
-        #             x=1
+    def criar_tkinter_images(self):
+        for carta in self.tabuleiro.baralho.cartas:
+            nome_imagem = ''
+            if isinstance(carta, CartaNormal): 
+                nome_imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
+            else:
+                nome_imagem = f'{carta.tipo}'
+            image = Image.open(f'src/cartas/{nome_imagem}.jpeg')
+            img = image.resize((100, 150))
+            self.dict_cards[f"{nome_imagem}"] = ImageTk.PhotoImage(img)
