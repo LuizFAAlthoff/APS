@@ -75,24 +75,24 @@ class AtorJogadorInterface(DogPlayerInterface):
 
         frame_jogador2 = Frame(self.canvas, bg="#a5b942")
         frame_jogador2.place(relwidth=0.4, relheight=0.3, relx=0.05, rely=0.0)
-        texto_jogador2 = Label(frame_jogador2, text="Jogador 2\n teste\n 3 cartas", bg="#a5b942")
+        texto_jogador2 = Label(frame_jogador2, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_dois].nome}", bg="#a5b942")
         texto_jogador2.pack(pady=10)
 
         frame_jogador_local = Frame(self.canvas, bg="#a5b942")
         frame_jogador_local.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
-        label_jogador_local = Label(frame_jogador_local, text=f"{self.tabuleiro.jogadores[0].nome}\n teste\n 5 cartas", bg="#a5b942")
+        label_jogador_local = Label(frame_jogador_local, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_local].nome}", bg="#a5b942")
         label_jogador_local.pack(pady=10)
 
         frame_jogador3 = Frame(self.canvas, bg="#a5b942")
         frame_jogador3.place(relwidth=0.4, relheight=0.3, relx=0.55, rely=0.0)
-        texto_jogador3 = Label(frame_jogador3, text="Jogador 3\n teste\n 5 cartas", bg="#a5b942")
+        texto_jogador3 = Label(frame_jogador3, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_tres].nome}", bg="#a5b942")
         texto_jogador3.pack(pady=10)
 
         frame_contador = Frame(self.canvas, bg="#b5b942")
         frame_contador.place(relwidth=0.1, relheight=0.2, relx=0.05, rely=0.4)
-        texto_contador = Label(frame_contador, text="Contador +1\n estou tentando colocar\n uma referência ao\n valor do contador aqui,\n mas não dá", bg="#b5b942")
+        texto_contador = Label(frame_contador, text="Contador +1", bg="#b5b942")
         texto_contador.pack(pady=10)
-        botao_add_contador = Button(frame_contador, text="+1", command=self.add_contador_cartas_mais_um)
+        botao_add_contador = Button(frame_contador, text=f"{self.tabuleiro.contador_cartas_mais_um}", command=self.tabuleiro.contador_cartas_mais_um)
         botao_add_contador.pack(pady=10)
 
         frame_central = Frame(self.canvas, bg="#b5b942")
@@ -114,21 +114,27 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.adiciona_carta_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_dois], frame_jogador2)
         self.adiciona_carta_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_tres], frame_jogador3)
 
-    def add_contador_cartas_mais_um(self):
-        self.tabuleiro.add_contador_cartas_mais_um()
-        self.valor_contador = self.tabuleiro.contador_cartas_mais_um
+    # def add_contador_cartas_mais_um(self):
+    #     self.tabuleiro.add_contador_cartas_mais_um()
+    #     self.valor_contador = self.tabuleiro.contador_cartas_mais_um
     
     def adiciona_carta_ao_jogador_design(self, jogador, frame):
         cartas_mao = jogador.mao 
+        x=1
         #verificar se jogador.id é o jogador local para colocar imagem das costas da carta para J2 e J3
-        for carta in cartas_mao:
-            if carta.cor_primaria == 'preto':
-                imagem = f'{carta.tipo}'
-                btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)    #sugestão: adicionar 'command = self.realizar_jogada(CartaEspecial(carta.cor_primaria, carta.tipo))'
-            else:
-                imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-                btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)    #sugestão: adicionar 'command = self.realizar_jogada(CartaNormal(carta.cor_primaria, carta.cor_secundaria, carta.numero))'
-            btn.pack(side="left", padx=10, pady=10, anchor="center")                    #dessa forma, ao clicar na carta, a função realizar_jogada é chamada com a carta correspondente, levando um objeto do tipo carta correspondente como parâmetro
+        if jogador.id == self.tabuleiro.local_id:
+            for carta in cartas_mao:
+                if carta.cor_primaria == 'preto':
+                    imagem = f'{carta.tipo}'
+                    btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)    #sugestão: adicionar 'command = self.realizar_jogada(CartaEspecial(carta.cor_primaria, carta.tipo))'
+                else:
+                    imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
+                    btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)    #sugestão: adicionar 'command = self.realizar_jogada(CartaNormal(carta.cor_primaria, carta.cor_secundaria, carta.numero))'
+                btn.pack(side="left", padx=10, pady=10, anchor="center")                    #dessa forma, ao clicar na carta, a função realizar_jogada é chamada com a carta correspondente, levando um objeto do tipo carta correspondente como parâmetro
+        else:
+            imagem = Label(frame, image=self.dict_cards['fundo_carta'], padx=50, pady=80)
+            imagem.pack(side="left", padx=10, pady=10, anchor="center") 
+
     
 
     def comprar_carta(self):
@@ -198,3 +204,5 @@ class AtorJogadorInterface(DogPlayerInterface):
             self.dict_cards[f"{nome_imagem}"] = ImageTk.PhotoImage(img)
             image_background = Image.open(f'src/menu_images/rainbow_bg.png')
             self.dict_cards[f"rainbow_bg"] = ImageTk.PhotoImage(image_background)
+            fundo_carta = Image.open(f'src/menu_images/fundo_carta.jpeg')
+            self.dict_cards[f"fundo_carta"] = ImageTk.PhotoImage(fundo_carta)
