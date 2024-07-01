@@ -145,7 +145,7 @@ class AtorJogadorInterface(DogPlayerInterface):
             x=1
 
     def tela_partida_design(self):
-        imagem_de_fundo = ImageTk.PhotoImage(Image.open("src/menu_images/rainbow_bg.png"))
+        imagem_de_fundo = self.dict_cards['rainbow_bg']
         self.canvas.create_image(0, 0, image=imagem_de_fundo, anchor="nw")
 
         frame_jogador2 = Frame(self.canvas, bg="#a5b942")
@@ -248,3 +248,5 @@ class AtorJogadorInterface(DogPlayerInterface):
             image = Image.open(f'src/cartas/{nome_imagem}.jpeg')
             img = image.resize((100, 150))
             self.dict_cards[f"{nome_imagem}"] = ImageTk.PhotoImage(img)
+            image_background = Image.open(f'src/menu_images/rainbow_bg.png')
+            self.dict_cards[f"rainbow_bg"] = ImageTk.PhotoImage(image_background)
