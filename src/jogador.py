@@ -34,13 +34,13 @@ class Jogador:
     ## fazer método Initialize
     
     def escolher_carta(self, indice_carta: bool):
-        return self.mao_cartas[indice_carta]
+        return self.mao[indice_carta]
     
-    def add_cartas_na_mao(self, lista_carta):
-        self.mao_cartas.append(lista_carta)
+    def add_cartas_na_mao(self, objeto_carta):
+        self.mao.append(objeto_carta)
     
     def get_cartas_mao(self, index: int):
-        return self.mao_cartas[index]
+        return self.mao[index]
     
     def to_dict(self):
         jogador = {
@@ -66,3 +66,10 @@ class Jogador:
 
             
         return jogador
+    
+    def print_cartas(self):
+        for carta in self.__mao:
+            if isinstance(carta, CartaNormal):
+                print(carta.cor_primaria, carta.cor_secundaria, carta.numero)
+            else:
+                print(carta.cor_primaria, carta.tipo)

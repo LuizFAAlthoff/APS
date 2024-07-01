@@ -22,86 +22,8 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.dict_cards = {}
         self.criar_tkinter_images()
         self.start_menu()
-        
-        # self.tabuleiro.comecar_partida(['cu'], 764857645)
-        x=1
-
-    def criar_tela_principal(self):
-        largura_janela = 1280
-        altura_janela = 720
-        janela = self.criar_janela_centralizada("Rainbow Cards", largura_janela, altura_janela)
-        self.design_tela_principal(janela, largura_janela, altura_janela)
-
-        janela.mainloop()
-
-    def criar_janela_centralizada(self, title, largura_janela, altura_janela):
-        janela = Tk()
-        janela.title(title)
-        largura_tela = janela.winfo_screenwidth()
-        altura_tela = janela.winfo_screenheight()
-        pos_x = (largura_tela // 2) - (largura_janela // 2)
-        pos_y = (altura_tela // 2) - (altura_janela // 2)
-        janela.geometry(f"{largura_janela}x{altura_janela}+{pos_x}+{pos_y}")
-
-        return janela
-
-    def design_tela_principal(self, janela, largura_janela, altura_janela):
-        imagem_de_fundo = ImageTk.PhotoImage(Image.open("menu_images/rainbow_bg.png"))
-    #     canvas = Canvas(janela, width=largura_janela, height=altura_janela)
-    #     canvas.pack(fill="both", expand=True)
-    #     canvas.create_image(0, 0, image=imagem_de_fundo, anchor="nw")
-
-    #     # Necessário para manter uma referência à imagem
-    #     self.imagem_de_fundo = imagem_de_fundo
-
-    #     frame_jogador2 = Frame(canvas, bg="#a5b942")
-    #     frame_jogador2.place(relwidth=0.4, relheight=0.3, relx=0.05, rely=0.0)
-    #     texto_jogador2 = Label(frame_jogador2, text="Jogador 2\n teste\n 3 cartas", bg="#a5b942")
-    #     texto_jogador2.pack(pady=10)
-
-    #     frame_jogador3 = Frame(canvas, bg="#a5b942")
-    #     frame_jogador3.place(relwidth=0.4, relheight=0.3, relx=0.55, rely=0.0)
-    #     texto_jogador3 = Label(frame_jogador3, text="Jogador 3\n teste\n 5 cartas", bg="#a5b942")
-    #     texto_jogador3.pack(pady=10)
-
-    #     frame_contador = Frame(canvas, bg="#b5b942")
-    #     frame_contador.place(relwidth=0.2, relheight=0.3, relx=0.05, rely=0.35)
-    #     texto_contador = Label(frame_contador, text="Contador +1\n 6", bg="#b5b942")
-    #     texto_contador.pack(pady=10)
-
-    #     #problemas aqui. Não consigo fazer a imagem aparecer não importa o que eu faça. O melhor que ocorre é um quadrado branco
-    #     frame_central = Frame(canvas, bg="#b5b942")
-    #     frame_central.place(relwidth=0.5, relheight=0.3, relx=0.3, rely=0.35)
-    #     #import da imagem
-    #     image_original_carta = Image.open("cartas/1-amarelo-anil.jpeg").resize((100, 100))
-    #     image_tk_carta = ImageTk.PhotoImage(image_original_carta)
-    #     #widget
-    #     label_carta = Label(frame_central, image=image_tk_carta)
-    #     label_carta.pack()
-
-    #     frame_botoes = Frame(canvas, bg="#b5b942")
-    #     frame_botoes.place(relwidth=0.1, relheight=0.2, relx=0.85, rely=0.4)
-    #     botao_comprar = Button(frame_botoes, text="Comprar Carta")
-    #     botao_comprar.place(relx=0.5, rely=0.3, anchor="center")
-    #     botao_passar_turno = Button(frame_botoes, text="Passar Turno")
-    #     botao_passar_turno.place(relx=0.5, rely=0.7, anchor="center")
-
-    #     frame_cartas = Frame(canvas, bg="#c5b942")
-    #     frame_cartas.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
-
-    #     canvas_cartas = Canvas(frame_cartas, width=largura_janela, height=altura_janela//3)
-    #     canvas.create_image(0, 0, image=ImageTk.PhotoImage(Image.open("menu_images/canvas_cartas.png")), anchor="e")
-    #     canvas_cartas.pack(side = LEFT, fill="both", expand=True)
-
-    #     scrollbar = Scrollbar(canvas_cartas, orient="horizontal", command=canvas_cartas.xview)
-    #     scrollbar.pack(anchor= "s", fill="x")
-    #     canvas_cartas.configure(xscrollcommand=scrollbar.set)
-
-    # def comprar_carta():
-    #     messagebox.showinfo("Ação", "Carta comprada")
-
-    # def realizar_jogada():
-    #     messagebox.showinfo("Ação", "Jogada realizada")
+        self.valor_contador = 0
+        print(self.valor_contador)
 
     def receive_start(self, start_status):
         self.tabuleiro.set_local_id(start_status.get_local_id())
@@ -114,8 +36,6 @@ class AtorJogadorInterface(DogPlayerInterface):
             self.tabuleiro.atualizar_jogadores(a_move)
             self.tela_partida_design()
             # regra para atualizar o tabuleiro dos jogadores 
-
-            x=1
         elif a_move["type"] == "block":
             pass
         elif a_move["type"] == "draw":
@@ -144,6 +64,11 @@ class AtorJogadorInterface(DogPlayerInterface):
             self.tela_partida_design()
             x=1
 
+    def add_contador_cartas_mais_um(self):
+        self.valor_contador += 1
+        # self.canvas.delete("all")
+        # self.tela_partida_design()
+
     def tela_partida_design(self):
         imagem_de_fundo = self.dict_cards['rainbow_bg']
         self.canvas.create_image(0, 0, image=imagem_de_fundo, anchor="nw")
@@ -155,7 +80,7 @@ class AtorJogadorInterface(DogPlayerInterface):
 
         frame_jogador_local = Frame(self.canvas, bg="#a5b942")
         frame_jogador_local.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
-        label_jogador_local = Label(frame_jogador_local, text="Jogador Local\n teste\n 5 cartas", bg="#a5b942")
+        label_jogador_local = Label(frame_jogador_local, text=f"{self.tabuleiro.jogadores[0].nome}\n teste\n 5 cartas", bg="#a5b942")
         label_jogador_local.pack(pady=10)
 
         frame_jogador3 = Frame(self.canvas, bg="#a5b942")
@@ -165,8 +90,10 @@ class AtorJogadorInterface(DogPlayerInterface):
 
         frame_contador = Frame(self.canvas, bg="#b5b942")
         frame_contador.place(relwidth=0.1, relheight=0.2, relx=0.05, rely=0.4)
-        texto_contador = Label(frame_contador, text="Contador +1\n 6", bg="#b5b942")
+        texto_contador = Label(frame_contador, text="Contador +1\n estou tentando colocar\n uma referência ao\n valor do contador aqui,\n mas não dá", bg="#b5b942")
         texto_contador.pack(pady=10)
+        botao_add_contador = Button(frame_contador, text="+1", command=self.add_contador_cartas_mais_um)
+        botao_add_contador.pack(pady=10)
 
         frame_central = Frame(self.canvas, bg="#b5b942")
         frame_central.place(relwidth=0.6, relheight=0.3, relx=0.2, rely=0.35)
@@ -187,6 +114,9 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.adiciona_carta_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_dois], frame_jogador2)
         self.adiciona_carta_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_tres], frame_jogador3)
 
+    def add_contador_cartas_mais_um(self):
+        self.tabuleiro.add_contador_cartas_mais_um()
+        self.valor_contador = self.tabuleiro.contador_cartas_mais_um
     
     def adiciona_carta_ao_jogador_design(self, jogador, frame):
         cartas_mao = jogador.mao 
@@ -194,14 +124,32 @@ class AtorJogadorInterface(DogPlayerInterface):
         for carta in cartas_mao:
             if carta.cor_primaria == 'preto':
                 imagem = f'{carta.tipo}'
+                btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)    #sugestão: adicionar 'command = self.realizar_jogada(CartaEspecial(carta.cor_primaria, carta.tipo))'
             else:
                 imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-            btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)
-            btn.pack(side="left", padx=10, pady=10, anchor="center")
+                btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)    #sugestão: adicionar 'command = self.realizar_jogada(CartaNormal(carta.cor_primaria, carta.cor_secundaria, carta.numero))'
+            btn.pack(side="left", padx=10, pady=10, anchor="center")                    #dessa forma, ao clicar na carta, a função realizar_jogada é chamada com a carta correspondente, levando um objeto do tipo carta correspondente como parâmetro
     
 
     def comprar_carta(self):
-        messagebox.showinfo("está no metodo comprar_carta", "Comprou X carta(s)")
+        messagebox.showinfo("está no metodo comprar_carta", "Olhe o terminal")
+        if isinstance(self.tabuleiro.ultima_carta, CartaNormal):
+            objeto_cartas_aleatoria = self.tabuleiro.baralho.get_carta_aleatoria()
+            self.tabuleiro.jogadores[self.tabuleiro.jogador_local].add_cartas_na_mao(objeto_cartas_aleatoria)
+            #não sei muito bem como adicionar a carta visualmente?? pensei em invocar o adicionar_carta_ao_jogador_design, mas teria que
+            # passar como parâmetro o frame_jogador_local, mas acho que ele só existe localmente dentro do método tela_partida_design, então acho que
+            #  não daria certo. Por isso ainda estou usando prints no console para ver se a carta foi adicionada ao jogador local
+
+            # as duas linhas abaixo são para ajudar a debugar
+            self.tabuleiro.jogadores[self.tabuleiro.jogador_local].print_cartas()
+            print("comprou carta: ", objeto_cartas_aleatoria.cor_primaria, objeto_cartas_aleatoria.cor_secundaria, objeto_cartas_aleatoria.numero)
+        elif isinstance(self.tabuleiro.ultima_carta, CartaEspecial) and self.tabuleiro.ultima_carta.tipo == 'mais-um':
+                self.tabuleiro.jogadores[self.tabuleiro.jogador_local].print_cartas()
+                messagebox.showinfo(" ", f"Comprou {self.tabuleiro.contador_cartas_mais_um} cartas")
+                for _ in range(self.tabuleiro.contador_cartas_mais_um):
+                    objeto_cartas_aleatoria = self.tabuleiro.baralho.get_carta_aleatoria()
+                    self.tabuleiro.jogadores[self.tabuleiro.jogador_local].add_cartas_na_mao(objeto_cartas_aleatoria)
+                    print("comprou carta: ", objeto_cartas_aleatoria.cor_primaria, objeto_cartas_aleatoria.cor_secundaria, objeto_cartas_aleatoria.numero)
 
     def passar_turno(self):
         messagebox.showinfo("está no metodo passar_turno", "Passou o turno")

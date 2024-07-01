@@ -1,16 +1,14 @@
 from jogador import Jogador
 from baralho import Baralho
 import random
-
 from carta_especial import CartaEspecial
 from carta_normal import CartaNormal
 
 
 class Tabuleiro:
     def __init__(self,  baralho: Baralho):
-        self.__ultima_carta = None
         self.__baralho = baralho
-        self.__contador_cartas_mais_um = 0
+        self.__contador_cartas_mais_um = 5
         self.__jogadores = [0, 0, 0]
         self.__jogador_local = 0
         self.__jogador_dois = 0
@@ -18,6 +16,8 @@ class Tabuleiro:
         self.__primeira_acao = True
         self.__jogador_atual = None
         self.__local_id = ""
+        self.__ultima_carta = CartaEspecial("preto", "mais-um")
+        #self.__ultima_carta = self.__baralho.get_carta_normal_aleatoria()
     
     @property
     def ultima_carta(self):
@@ -140,7 +140,6 @@ class Tabuleiro:
         self.jogador_atual = self.local_id
 
     def atualizar_jogadores(self, a_move):
-        x = 0
         print(a_move)
         for i, jogador in enumerate(a_move["jogadores"]):
             cartas_jogador = []
@@ -191,16 +190,16 @@ class Tabuleiro:
         for _ in range(7):
             carta = random.choice(self.get_baralho().get_cartas())
             mao.append(carta)
-        x=1
         return mao
     
     def set_local_id(self, local_id):
         self.__local_id = local_id
-
-    def get_random_card(self):
-        return random.choice(self.__lista_cartas)
     
     def get_baralho(self) -> Baralho:
-        x = self.__baralho
         return self.__baralho
     
+    def get__valordocontador__maisum(self):
+        return self.__contador_cartas_mais_um + 1
+    
+    def add_contador_cartas_mais_um(self):
+        self.__contador_cartas_mais_um += 1

@@ -213,5 +213,3 @@ class TabuleiroTeste:
 root = Tk()
 app = AppTeste(root)
 root.mainloop()
-
-##teste branch nova
