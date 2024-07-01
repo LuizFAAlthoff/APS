@@ -8,7 +8,7 @@ from carta_normal import CartaNormal
 class Tabuleiro:
     def __init__(self,  baralho: Baralho):
         self.__baralho = baralho
-        self.__contador_cartas_mais_um = 5
+        self.__contador_cartas_mais_um = 0
         self.__jogadores = [0, 0, 0]
         self.__jogador_local = 0
         self.__jogador_dois = 0
@@ -16,8 +16,9 @@ class Tabuleiro:
         self.__primeira_acao = True
         self.__jogador_atual = None
         self.__local_id = ""
-        self.__ultima_carta = CartaEspecial("preto", "mais-um")
-        #self.__ultima_carta = self.__baralho.get_carta_normal_aleatoria()
+        #self.__contador_cartas_mais_um = 5
+        #self.__ultima_carta = CartaEspecial("preto", "mais-um")
+        self.__ultima_carta = self.__baralho.get_carta_normal_aleatoria()
     
     @property
     def ultima_carta(self):
