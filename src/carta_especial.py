@@ -31,3 +31,4 @@ class CartaEspecial(Carta):
         return {'cor_primaria': self.cor_primaria,
                 'tipo': self.tipo,
                 'ja_satisfeita': self.ja_satisfeita}
+    

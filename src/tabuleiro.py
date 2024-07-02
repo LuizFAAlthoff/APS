@@ -155,6 +155,10 @@ class Tabuleiro:
             self.jogadores[i] = (Jogador(jogador['id'], jogador['nome'], cartas_jogador))
         self.atualizar_posicoes_jogadores()
 
+    def atualizar_tabuleiro(self, a_move):
+        self.ultima_carta = self.atualizar_cartas_tabuleiro(a_move["ultima_carta_tabuleiro"])
+        self.contador_cartas_mais_um = a_move["contador_cartas_mais_um"]
+        #self.primeira_acao = a_move["primeira_acao"] # para verificar se nao teve nenhuma jogada, é utilizado o ultima_carta, que se esta vazio nao teve nenhuma jogada ainda 
 
     def transforma_jogada_para_move(self, tipo_jogada) -> dict:
         jogada = {}
@@ -165,8 +169,6 @@ class Tabuleiro:
             jogada["jogador_atual"] = self.__jogador_atual
             if self.ultima_carta is not None:
                 jogada["ultima_carta_tabuleiro"] = self.__ultima_carta.to_dict()
-            else:
-                jogada["ultima_carta_tabuleiro"] = self.__ultima_carta
             jogada["contador_cartas_mais_um"] = self.__contador_cartas_mais_um
             jogada["primeira_acao"] = self.__primeira_acao
             jogada["jogadores"] = self.jogadores_to_dict() 
@@ -192,6 +194,14 @@ class Tabuleiro:
             carta = random.choice(self.get_baralho().get_cartas())
             mao.append(carta)
         return mao
+    
+    def atualizar_cartas_tabuleiro(self, move_carta):
+        if move_carta["cor_primaria"] == 'preto':
+            carta = CartaEspecial(move_carta["cor_primaria"], move_carta["tipo"])
+            carta.ja_satisfeita = move_carta["ja_satisfeita"]
+            return carta
+        return CartaNormal(move_carta["cor_primaria"], move_carta["cor_secundaria"], move_carta["numero"])
+
     
     def set_local_id(self, local_id):
         self.__local_id = local_id
