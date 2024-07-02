@@ -46,6 +46,8 @@ class AtorJogadorInterface(DogPlayerInterface):
             pass
         elif a_move["type"] == "end":
             pass
+        # elif a_move["type"] == "+1": ===> CRIAR UM TIPO DE JOGADA MAIS UM PARA CRIAR VERIFICACAO DE QUANDO JOGADOR TEM QUE COMPRAR O CONTADOR
+        #     pass
     
     def receive_withdrawal_notification(self):
         self.show_screen_disconnect()
@@ -85,6 +87,8 @@ class AtorJogadorInterface(DogPlayerInterface):
         frame_jogador_local.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
         label_jogador_local = Label(frame_jogador_local, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_local].nome}", bg="#a5b942")
         label_jogador_local.pack(pady=10)
+        # scroll = Scrollbar(frame_jogador_local, orient=HORIZONTAL) ===> VER COMO ADICIONAR SCROLL AO FRAME DE JOGADOR LOCAL P/ MOSTRAR TODAS AS CARTAS
+        # scroll.config(command=t.xview)
         self.dict_frames["jogador_local"] = frame_jogador_local
 
         frame_jogador3 = Frame(self.canvas, bg="#a5b942")
