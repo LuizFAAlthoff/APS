@@ -69,3 +69,7 @@ class Baralho():
     def get_carta_normal_aleatoria(self):
         index_aleatorio = random.randint(0, 125) #gera um número aleatório entre 0 e 125, pois as cartas normais são os primeiros 126 elementos da lista de cartas
         return self.__cartas[index_aleatorio]
+    
+    def get_carta_especial_aleatoria(self):
+        index = random.randint(126, 127)
+        return self.__cartas[index]

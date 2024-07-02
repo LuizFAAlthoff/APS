@@ -10,6 +10,7 @@ from tabuleiro import Tabuleiro
 from baralho import Baralho
 from carta_especial import CartaEspecial
 from carta_normal import CartaNormal
+from jogada import Jogada
 import customtkinter
 
 
@@ -24,9 +25,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.dict_frames = {}
         self.criar_tkinter_images()
         self.start_menu()
-        self.valor_contador = 0
-        print(self.valor_contador)
-        
+
 
     def receive_start(self, start_status):
         self.tabuleiro.set_local_id(start_status.get_local_id())
@@ -80,27 +79,25 @@ class AtorJogadorInterface(DogPlayerInterface):
 
         frame_jogador2 = Frame(self.canvas, bg="#a5b942")
         frame_jogador2.place(relwidth=0.4, relheight=0.3, relx=0.05, rely=0.0)
-        texto_jogador2 = Label(frame_jogador2, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_dois].nome}", bg="#a5b942")
+        texto_jogador2 = Label(frame_jogador2, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_dois].nome} \n {len(self.tabuleiro.jogadores[self.tabuleiro.jogador_dois].mao)} cartas", bg="#a5b942")
         texto_jogador2.pack(pady=10)
         self.dict_frames["jogador2"] = frame_jogador2
         
-        frame_jogador_local = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_local].nome}\nQuantidade de cartas: {len(self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao)}", fg_color="#a5b942")
+        frame_jogador_local = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_local].nome} \n {len(self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao)} cartas", fg_color="#a5b942")
         frame_jogador_local.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
 
         self.dict_frames["jogador_local"] = frame_jogador_local
 
         frame_jogador3 = Frame(self.canvas, bg="#a5b942")
         frame_jogador3.place(relwidth=0.4, relheight=0.3, relx=0.55, rely=0.0)
-        texto_jogador3 = Label(frame_jogador3, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_tres].nome}", bg="#a5b942")
+        texto_jogador3 = Label(frame_jogador3, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_tres].nome} \n {len(self.tabuleiro.jogadores[self.tabuleiro.jogador_tres].mao)} cartas", bg="#a5b942")
         texto_jogador3.pack(pady=10)
         self.dict_frames["jogador3"] = frame_jogador3
 
         frame_contador = Frame(self.canvas, bg="#b5b942")
         frame_contador.place(relwidth=0.1, relheight=0.2, relx=0.05, rely=0.4)
-        texto_contador = Label(frame_contador, text="Contador +1", bg="#b5b942")
+        texto_contador = Label(frame_contador, text=f"Contador +1 \n {self.tabuleiro.contador_cartas_mais_um}", bg="#b5b942")
         texto_contador.pack(pady=10)
-        botao_add_contador = Button(frame_contador, text=f"{self.tabuleiro.contador_cartas_mais_um}", command=self.tabuleiro.contador_cartas_mais_um)
-        botao_add_contador.pack(pady=10)
         self.dict_frames["frame_contador"] = frame_contador
 
 
@@ -115,7 +112,7 @@ class AtorJogadorInterface(DogPlayerInterface):
 
         frame_botoes = Frame(self.canvas, bg="#b5b942")
         frame_botoes.place(relwidth=0.1, relheight=0.2, relx=0.85, rely=0.4)
-        botao_comprar = Button(frame_botoes, text="Comprar Carta", command=self.comprar_carta) #command=self.comprar_carta() passar esse command pra dentro quando o botão ser clicado chamar o metodo
+        botao_comprar = Button(frame_botoes, text="Comprar Carta", command=self.comprar_carta) 
         botao_comprar.place(relx=0.5, rely=0.2, anchor="center")
         botao_passar_turno = Button(frame_botoes, text="Passar Turno") #command=self.passar_turno()) -> adicionar so quando tiver realmente a funcionalidade 
         botao_passar_turno.place(relx=0.5, rely=0.5, anchor="center")
@@ -137,7 +134,7 @@ class AtorJogadorInterface(DogPlayerInterface):
             for carta in cartas_mao:
                 if carta.cor_primaria == 'preto':
                     imagem = f'{carta.tipo}'
-                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")    #sugestão: adicionar 'command = self.realizar_jogada(CartaEspecial(carta.cor_primaria, carta.tipo))'
+                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")   
                 else:
                     imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
                     btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")    #sugestão: adicionar 'command = self.realizar_jogada(CartaNormal(carta.cor_primaria, carta.cor_secundaria, carta.numero))'
@@ -157,29 +154,28 @@ class AtorJogadorInterface(DogPlayerInterface):
                 btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")   
             btn.pack(side="left", padx=10, pady=5, anchor="center")                    
 
-    
 
     def comprar_carta(self):
-        cartas_compradas = []
-        carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
-        self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
-        cartas_compradas.append(carta_comprada)
-        self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
+        if isinstance(self.tabuleiro.ultima_carta, CartaEspecial):
+            if self.tabuleiro.ultima_carta.tipo == 'mais-um':
+                if self.tabuleiro.ultima_carta.ja_satisfeita == False:
+                    cartas_compradas = []
+                    for _ in range(self.tabuleiro.contador_cartas_mais_um):
+                        carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
+                        self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
+                        cartas_compradas.append(carta_comprada)
+                    self.tabuleiro.ultima_carta.ja_satisfeita = True
+                    self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
+        else:
+            cartas_compradas = []
+            carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
+            self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
+            cartas_compradas.append(carta_comprada)
+            self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
 
-        #if isinstance(self.tabuleiro.ultima_carta, CartaNormal):
 
-        # else:
-        #     if self.tabuleiro.ultima_carta.tipo == 'mais-um':
-        #         self.tabuleiro.jogadores[self.tabuleiro.jogador_local].print_cartas()
-        #         messagebox.showinfo(" ", f"Comprou {self.tabuleiro.contador_cartas_mais_um} cartas")
-        #         for _ in range(self.tabuleiro.contador_cartas_mais_um):
-        #             objeto_cartas_aleatoria = self.tabuleiro.baralho.get_carta_aleatoria()
-        #             self.tabuleiro.jogadores[self.tabuleiro.jogador_local].add_cartas_na_mao(objeto_cartas_aleatoria)
-        #             print("comprou carta: ", objeto_cartas_aleatoria.cor_primaria, objeto_cartas_aleatoria.cor_secundaria, objeto_cartas_aleatoria.numero)
-
-
-    # def passar_turno(self):
-    #    messagebox.showinfo("está no metodo passar_turno", "Passou o turno")
+    def passar_turno(self):
+       messagebox.showinfo("está no metodo passar_turno", "Passou o turno")
 
 
     def set_canvas(self): #DEFINE UMA ÁREA RETANGULAR NA TELA PARA MOSTRAR OS COMPONENTES DA INTERFACE
