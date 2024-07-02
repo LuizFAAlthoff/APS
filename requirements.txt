@@ -5,3 +5,4 @@ requests==2.27.1
 urllib3==1.26.9
 Pillow==9.5.0
 tk==0.1.0
+customtkinter==5.2.2

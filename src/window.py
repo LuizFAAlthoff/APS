@@ -1,12 +1,13 @@
 from tkinter import *
+import customtkinter
 
 class Window():
 
     def __init__(self) -> None:
-        self.__window = Tk()
+        self.__window = customtkinter.CTk()
         self.createWindow()
         
-    def getWindow(self) -> Tk:
+    def getWindow(self):
         return self.__window
 
     def createWindow(self) -> None:

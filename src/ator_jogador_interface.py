@@ -10,6 +10,7 @@ from tabuleiro import Tabuleiro
 from baralho import Baralho
 from carta_especial import CartaEspecial
 from carta_normal import CartaNormal
+import customtkinter
 
 
 class AtorJogadorInterface(DogPlayerInterface):
@@ -83,12 +84,9 @@ class AtorJogadorInterface(DogPlayerInterface):
         texto_jogador2.pack(pady=10)
         self.dict_frames["jogador2"] = frame_jogador2
         
-        frame_jogador_local = Frame(self.canvas, bg="#a5b942")
+        frame_jogador_local = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_local].nome}\nQuantidade de cartas: {len(self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao)}", fg_color="#a5b942")
         frame_jogador_local.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
-        label_jogador_local = Label(frame_jogador_local, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_local].nome}", bg="#a5b942")
-        label_jogador_local.pack(pady=10)
-        # scroll = Scrollbar(frame_jogador_local, orient=HORIZONTAL) ===> VER COMO ADICIONAR SCROLL AO FRAME DE JOGADOR LOCAL P/ MOSTRAR TODAS AS CARTAS
-        # scroll.config(command=t.xview)
+
         self.dict_frames["jogador_local"] = frame_jogador_local
 
         frame_jogador3 = Frame(self.canvas, bg="#a5b942")
@@ -108,9 +106,9 @@ class AtorJogadorInterface(DogPlayerInterface):
 
         if self.tabuleiro.ultima_carta == None: # significa que é a primeira jogada
             self.tabuleiro.ultima_carta = self.tabuleiro.baralho.get_carta_normal_aleatoria()
-        frame_central = Frame(self.canvas, bg="#b5b942")
+        frame_central = customtkinter.CTkFrame(master=self.canvas, fg_color="#b5b942")
         frame_central.place(relwidth=0.6, relheight=0.3, relx=0.2, rely=0.35)
-        label_carta = Label(frame_central, image=self.dict_cards[self.cria_chave_para_ultima_carta()])
+        label_carta = customtkinter.CTkLabel(master=frame_central, image=self.dict_cards[self.cria_chave_para_ultima_carta()], text="")
         label_carta.pack(expand=True)
         self.dict_frames["frame_central"] = frame_central
         
@@ -139,25 +137,25 @@ class AtorJogadorInterface(DogPlayerInterface):
             for carta in cartas_mao:
                 if carta.cor_primaria == 'preto':
                     imagem = f'{carta.tipo}'
-                    btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)    #sugestão: adicionar 'command = self.realizar_jogada(CartaEspecial(carta.cor_primaria, carta.tipo))'
+                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")    #sugestão: adicionar 'command = self.realizar_jogada(CartaEspecial(carta.cor_primaria, carta.tipo))'
                 else:
                     imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-                    btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)    #sugestão: adicionar 'command = self.realizar_jogada(CartaNormal(carta.cor_primaria, carta.cor_secundaria, carta.numero))'
-                btn.pack(side="left", padx=10, pady=10, anchor="center")                    #dessa forma, ao clicar na carta, a função realizar_jogada é chamada com a carta correspondente, levando um objeto do tipo carta correspondente como parâmetro
+                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")    #sugestão: adicionar 'command = self.realizar_jogada(CartaNormal(carta.cor_primaria, carta.cor_secundaria, carta.numero))'
+                btn.pack(side="left", padx=10, pady=5, anchor="center")                    #dessa forma, ao clicar na carta, a função realizar_jogada é chamada com a carta correspondente, levando um objeto do tipo carta correspondente como parâmetro
         else:
-            imagem = Label(frame, image=self.dict_cards['fundo_carta'], padx=50, pady=80)
-            imagem.pack(side="left", padx=10, pady=10, anchor="center") 
+            imagem = Label(frame, image=self.dict_cards['fundo_carta'], padx=50)
+            imagem.pack(side="left", padx=10, pady=5,anchor="center") 
 
 
     def adiciona_cartas_compradas_ao_jogador_design(self, lista_cartas_compradas, frame):
         for carta in lista_cartas_compradas:
             if carta.cor_primaria == 'preto':
                 imagem = f'{carta.tipo}'
-                btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)   
+                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")   
             else:
                 imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-                btn = Button(frame, image=self.dict_cards[imagem], padx=50, pady=80)   
-            btn.pack(side="left", padx=10, pady=10, anchor="center")                    
+                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")   
+            btn.pack(side="left", padx=10, pady=5, anchor="center")                    
 
     
 
@@ -221,13 +219,15 @@ class AtorJogadorInterface(DogPlayerInterface):
             nome_imagem = ''
             if isinstance(carta, CartaNormal): 
                 nome_imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
+                imagem = customtkinter.CTkImage(Image.open(f'src/cartas/{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}.png'), size=(100, 150))
             else:
                 nome_imagem = f'{carta.tipo}'
-            image = Image.open(f'src/cartas/{nome_imagem}.jpeg')
-            img = image.resize((100, 150))
-            self.dict_cards[f"{nome_imagem}"] = ImageTk.PhotoImage(img)
+                imagem = customtkinter.CTkImage(Image.open(f'src/cartas/{carta.tipo}.png'), size=(100, 150))
+            self.dict_cards[f"{nome_imagem}"] = imagem
+
             image_background = Image.open(f'src/menu_images/rainbow_bg.png')
             self.dict_cards[f"rainbow_bg"] = ImageTk.PhotoImage(image_background)
+
             fundo_carta = Image.open(f'src/menu_images/fundo_carta.jpeg')
             self.dict_cards[f"fundo_carta"] = ImageTk.PhotoImage(fundo_carta)
     
