@@ -23,6 +23,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.tabuleiro  = Tabuleiro(Baralho())
         self.dict_cards = {}
         self.dict_frames = {}
+        self.dict_btn_cartas = []
         self.criar_tkinter_images()
         self.start_menu()
 
@@ -116,8 +117,6 @@ class AtorJogadorInterface(DogPlayerInterface):
         botao_comprar.place(relx=0.5, rely=0.2, anchor="center")
         botao_passar_turno = Button(frame_botoes, text="Passar Turno") #command=self.passar_turno()) -> adicionar so quando tiver realmente a funcionalidade 
         botao_passar_turno.place(relx=0.5, rely=0.5, anchor="center")
-        botao_carta_aleatoria = Button(frame_botoes, text="Carta Aleatória")
-        botao_carta_aleatoria.place(relx=0.5, rely=0.8, anchor="center")
         self.dict_frames["frame_botoes"] = frame_botoes
         
         self.adiciona_cartas_iniciais_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_local], frame_jogador_local)
@@ -134,11 +133,16 @@ class AtorJogadorInterface(DogPlayerInterface):
             for carta in cartas_mao:
                 if carta.cor_primaria == 'preto':
                     imagem = f'{carta.tipo}'
-                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")   
+                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))   
+                    btn.carta = carta
+                    self.dict_btn_cartas.append(btn)
+
                 else:
                     imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")    #sugestão: adicionar 'command = self.realizar_jogada(CartaNormal(carta.cor_primaria, carta.cor_secundaria, carta.numero))'
-                btn.pack(side="left", padx=10, pady=5, anchor="center")                    #dessa forma, ao clicar na carta, a função realizar_jogada é chamada com a carta correspondente, levando um objeto do tipo carta correspondente como parâmetro
+                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))
+                    btn.carta = carta
+                    self.dict_btn_cartas.append(btn)
+                btn.pack(side="left", padx=10, pady=5, anchor="center")
         else:
             imagem = Label(frame, image=self.dict_cards['fundo_carta'], padx=50)
             imagem.pack(side="left", padx=10, pady=5,anchor="center") 
@@ -148,10 +152,10 @@ class AtorJogadorInterface(DogPlayerInterface):
         for carta in lista_cartas_compradas:
             if carta.cor_primaria == 'preto':
                 imagem = f'{carta.tipo}'
-                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")   
+                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))  
             else:
                 imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="")   
+                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))  
             btn.pack(side="left", padx=10, pady=5, anchor="center")                    
 
 
@@ -175,7 +179,12 @@ class AtorJogadorInterface(DogPlayerInterface):
 
 
     def passar_turno(self):
-       messagebox.showinfo("está no metodo passar_turno", "Passou o turno")
+       self.tabuleiro.jogadores[self.tabuleiro.jogador_atual + 1]
+
+    def jogar(self, carta):
+        # ao entrar nessa função, carta é a carta que foi clicada pelo usuario na interface
+        #precisa implementar logica para encadeamento de cartas
+        print(carta)
 
 
     def set_canvas(self): #DEFINE UMA ÁREA RETANGULAR NA TELA PARA MOSTRAR OS COMPONENTES DA INTERFACE
