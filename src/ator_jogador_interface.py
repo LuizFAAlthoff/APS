@@ -23,7 +23,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.tabuleiro  = Tabuleiro(Baralho())
         self.dict_cards = {}
         self.dict_frames = {}
-        self.dict_btn_cartas = []
+        self.dict_btn_cartas = {}
         self.criar_tkinter_images()
         self.start_menu()
 
@@ -35,16 +35,18 @@ class AtorJogadorInterface(DogPlayerInterface):
 
     def receive_move(self, a_move: dict):
         if a_move["type"] == "init":
-            print(a_move)
             self.tabuleiro.atualizar_jogadores(a_move) 
-            self.tabuleiro.atualizar_tabuleiro(a_move)
+            self.tabuleiro.atualizar_cartas_tabuleiro(a_move)
             self.tela_partida_design()
         elif a_move["type"] == "block":
             pass
         elif a_move["type"] == "draw":
             pass
         elif a_move["type"] == "pass":
-            pass
+            self.tabuleiro.jogador_atual = a_move["jogador_atual"]
+            self.tabuleiro.atualizar_cartas_tabuleiro(a_move)
+            self.tela_partida_design()
+
         elif a_move["type"] == "end":
             pass
         # elif a_move["type"] == "+1": ===> CRIAR UM TIPO DE JOGADA MAIS UM PARA CRIAR VERIFICACAO DE QUANDO JOGADOR TEM QUE COMPRAR O CONTADOR
@@ -115,7 +117,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         frame_botoes.place(relwidth=0.1, relheight=0.2, relx=0.85, rely=0.4)
         botao_comprar = Button(frame_botoes, text="Comprar Carta", command=self.comprar_carta) 
         botao_comprar.place(relx=0.5, rely=0.2, anchor="center")
-        botao_passar_turno = Button(frame_botoes, text="Passar Turno") #command=self.passar_turno()) -> adicionar so quando tiver realmente a funcionalidade 
+        botao_passar_turno = Button(frame_botoes, text="Passar Turno", command=self.passar_turno)
         botao_passar_turno.place(relx=0.5, rely=0.5, anchor="center")
         self.dict_frames["frame_botoes"] = frame_botoes
         
@@ -135,13 +137,13 @@ class AtorJogadorInterface(DogPlayerInterface):
                     imagem = f'{carta.tipo}'
                     btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))   
                     btn.carta = carta
-                    self.dict_btn_cartas.append(btn)
+                    self.dict_btn_cartas[carta] = btn
 
                 else:
                     imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
                     btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))
                     btn.carta = carta
-                    self.dict_btn_cartas.append(btn)
+                    self.dict_btn_cartas[carta] = btn
                 btn.pack(side="left", padx=10, pady=5, anchor="center")
         else:
             imagem = Label(frame, image=self.dict_cards['fundo_carta'], padx=50)
@@ -153,9 +155,13 @@ class AtorJogadorInterface(DogPlayerInterface):
             if carta.cor_primaria == 'preto':
                 imagem = f'{carta.tipo}'
                 btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))  
+                self.dict_btn_cartas[carta] = btn
+                
             else:
                 imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))  
+                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))
+                self.dict_btn_cartas[carta] = btn
+
             btn.pack(side="left", padx=10, pady=5, anchor="center")                    
 
 
@@ -179,12 +185,27 @@ class AtorJogadorInterface(DogPlayerInterface):
 
 
     def passar_turno(self):
-       self.tabuleiro.jogadores[self.tabuleiro.jogador_atual + 1]
+        self.tabuleiro.jogador_atual = (self.tabuleiro.jogador_atual + 1) % 3
+        move = self.tabuleiro.transforma_jogada_para_move("pass")
+        self.__dog_server_interface.send_move(move)
+        self.tela_partida_design()
+
 
     def jogar(self, carta):
-        # ao entrar nessa função, carta é a carta que foi clicada pelo usuario na interface
-        #precisa implementar logica para encadeamento de cartas
-        print(carta)
+        if self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
+            # ao entrar nessa função, carta é a carta que foi clicada pelo usuario na interface
+            #precisa implementar logica para encadeamento de cartas
+            x=1
+        else: 
+            messagebox.showwarning("Espere", "Não é a sua vez de jogar")
+
+
+    def remove_botao_carta(self, carta):
+        self.tabuleiro.ultima_carta = carta
+        btn = self.dict_btn_cartas[carta]
+        btn.destroy()
+        del self.dict_btn_cartas[carta]
+        print(btn)
 
 
     def set_canvas(self): #DEFINE UMA ÁREA RETANGULAR NA TELA PARA MOSTRAR OS COMPONENTES DA INTERFACE

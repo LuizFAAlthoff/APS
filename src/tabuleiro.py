@@ -14,7 +14,7 @@ class Tabuleiro:
         self.__jogador_dois = 0
         self.__jogador_tres = 0
         self.__primeira_acao = True
-        self.__jogador_atual = None
+        self.__jogador_atual = 0
         self.__local_id = ""
         self.__ultima_carta = self.__baralho.get_carta_normal_aleatoria()
         # self.__ultima_carta = self.__baralho.get_carta_especial_aleatoria() se quiser testar o contador descomente essa função
@@ -125,9 +125,9 @@ class Tabuleiro:
                     self.jogador_dois = i
                 else:
                     self.jogador_tres = i
-        self.jogador_atual = self.local_id
+        self.jogador_atual = self.jogador_local
 
-    def atualizar_posicoes_jogadores(self):
+    def atualizar_posicoes_jogadores(self, jogador_atual):
         for i, jogador in enumerate(self.jogadores):
             x=1
             if jogador.id == self.local_id:
@@ -137,7 +137,7 @@ class Tabuleiro:
                     self.jogador_dois = i
                 else:
                     self.jogador_tres = i
-        self.jogador_atual = self.local_id
+        self.jogador_atual = jogador_atual
 
     def atualizar_jogadores(self, a_move):
         print(a_move)
@@ -152,25 +152,34 @@ class Tabuleiro:
                     carta_normal = CartaNormal(carta['cor_primaria'],carta['cor_secundaria'], carta['numero'])
                     cartas_jogador.append(carta_normal)
             self.jogadores[i] = (Jogador(jogador['id'], jogador['nome'], cartas_jogador))
-        self.atualizar_posicoes_jogadores()
+        self.atualizar_posicoes_jogadores(a_move["jogador_atual"])
 
-    def atualizar_tabuleiro(self, a_move):
-        self.ultima_carta = self.atualizar_cartas_tabuleiro(a_move["ultima_carta_tabuleiro"])
+    def atualizar_cartas_tabuleiro(self, a_move):
+        self.ultima_carta = self.transforma_move_para_carta(a_move["ultima_carta_tabuleiro"])
         self.contador_cartas_mais_um = a_move["contador_cartas_mais_um"]
-        #self.primeira_acao = a_move["primeira_acao"] # para verificar se nao teve nenhuma jogada, é utilizado o ultima_carta, que se esta vazio nao teve nenhuma jogada ainda 
+
 
     def transforma_jogada_para_move(self, tipo_jogada) -> dict:
         jogada = {}
         if tipo_jogada == "init":
-            jogada["type"] = "init"
+            jogada["type"] = tipo_jogada
             jogada["match_status"] = "progress"
             jogada["baralho"] = self.__baralho.to_dict()
-            jogada["jogador_atual"] = self.__jogador_atual
+            jogada["jogador_atual"] = self.jogador_atual # indice do jogador atual na lista de jogadores
             if self.ultima_carta is not None:
-                jogada["ultima_carta_tabuleiro"] = self.__ultima_carta.to_dict()
-            jogada["contador_cartas_mais_um"] = self.__contador_cartas_mais_um
-            jogada["primeira_acao"] = self.__primeira_acao
+                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
+            jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
+            jogada["primeira_acao"] = self.__primeira_acao # talvez remover, nao esta sendo usado
             jogada["jogadores"] = self.jogadores_to_dict() 
+
+        elif tipo_jogada == "pass":
+            jogada["type"] = tipo_jogada
+            jogada["match_status"] = "progress"
+            jogada["jogador_atual"] = self.jogador_atual
+            if self.ultima_carta is not None:
+                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
+            jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
+
         return jogada
     
     def jogadores_to_dict(self):
@@ -191,7 +200,7 @@ class Tabuleiro:
             mao.append(carta)
         return mao
     
-    def atualizar_cartas_tabuleiro(self, move_carta):
+    def transforma_move_para_carta(self, move_carta):
         if move_carta["cor_primaria"] == 'preto':
             carta = CartaEspecial(move_carta["cor_primaria"], move_carta["tipo"])
             carta.ja_satisfeita = move_carta["ja_satisfeita"]
@@ -210,3 +219,6 @@ class Tabuleiro:
     
     def add_contador_cartas_mais_um(self):
         self.__contador_cartas_mais_um += 1
+
+    def eh_a_vez_do_jogador_local_jogar(self):
+        return self.local_id == self.jogadores[self.jogador_atual].id
