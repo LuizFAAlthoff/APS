@@ -80,25 +80,20 @@ class AtorJogadorInterface(DogPlayerInterface):
         imagem_de_fundo = self.dict_cards['rainbow_bg']
         self.canvas.create_image(0, 0, image=imagem_de_fundo, anchor="nw")
 
-        frame_jogador2 = Frame(self.canvas, bg="#a5b942")
-        frame_jogador2.place(relwidth=0.4, relheight=0.3, relx=0.05, rely=0.0)
-        texto_jogador2 = Label(frame_jogador2, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_dois].nome} \n {len(self.tabuleiro.jogadores[self.tabuleiro.jogador_dois].mao)} cartas", bg="#a5b942")
-        texto_jogador2.pack(pady=10)
-        self.dict_frames["jogador2"] = frame_jogador2
-        
-        frame_jogador_local = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_local].nome} \n {len(self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao)} cartas", fg_color="#a5b942")
-        frame_jogador_local.place(relwidth=0.9, relheight=0.3, relx=0.05, rely=0.7)
-
+        frame_jogador_local = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_local].nome}\n{len(self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao)} cartas",label_fg_color="#b5b942", label_text_color="white",label_font=("helvetica", 20, "bold"), fg_color="#b5b942")
+        frame_jogador_local.place(relwidth=0.9, relheight=0.35, relx=0.05, rely=0.65)
         self.dict_frames["jogador_local"] = frame_jogador_local
 
-        frame_jogador3 = Frame(self.canvas, bg="#a5b942")
+        frame_jogador2 = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_dois].nome}\n{len(self.tabuleiro.jogadores[self.tabuleiro.jogador_dois].mao)} cartas", label_fg_color="#b5b942",label_text_color="black",label_font=("helvetica", 14, "bold"),fg_color="#b5b942")
+        frame_jogador2.place(relwidth=0.4, relheight=0.3, relx=0.05, rely=0.0)
+        self.dict_frames["jogador2"] = frame_jogador2
+
+        frame_jogador3 = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_tres].nome}\n{len(self.tabuleiro.jogadores[self.tabuleiro.jogador_tres].mao)} cartas", label_fg_color="#b5b942",label_text_color="black",label_font=("helvetica", 14, "bold"),fg_color="#b5b942")
         frame_jogador3.place(relwidth=0.4, relheight=0.3, relx=0.55, rely=0.0)
-        texto_jogador3 = Label(frame_jogador3, text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_tres].nome} \n {len(self.tabuleiro.jogadores[self.tabuleiro.jogador_tres].mao)} cartas", bg="#a5b942")
-        texto_jogador3.pack(pady=10)
         self.dict_frames["jogador3"] = frame_jogador3
 
         frame_contador = Frame(self.canvas, bg="#b5b942")
-        frame_contador.place(relwidth=0.1, relheight=0.2, relx=0.05, rely=0.4)
+        frame_contador.place(relwidth=0.1, relheight=0.2, relx=0.05, rely=0.375)
         texto_contador = Label(frame_contador, text=f"Contador +1 \n {self.tabuleiro.contador_cartas_mais_um}", bg="#b5b942")
         texto_contador.pack(pady=10)
         self.dict_frames["frame_contador"] = frame_contador
@@ -107,14 +102,14 @@ class AtorJogadorInterface(DogPlayerInterface):
         if self.tabuleiro.ultima_carta == None: # significa que é a primeira jogada
             self.tabuleiro.ultima_carta = self.tabuleiro.baralho.get_carta_normal_aleatoria()
         frame_central = customtkinter.CTkFrame(master=self.canvas, fg_color="#b5b942")
-        frame_central.place(relwidth=0.6, relheight=0.3, relx=0.2, rely=0.35)
+        frame_central.place(relwidth=0.2, relheight=0.25, relx=0.4, rely=0.35)
         label_carta = customtkinter.CTkLabel(master=frame_central, image=self.dict_cards[self.cria_chave_para_ultima_carta()], text="")
         label_carta.pack(expand=True)
         self.dict_frames["frame_central"] = frame_central
         
 
         frame_botoes = Frame(self.canvas, bg="#b5b942")
-        frame_botoes.place(relwidth=0.1, relheight=0.2, relx=0.85, rely=0.4)
+        frame_botoes.place(relwidth=0.1, relheight=0.2, relx=0.85, rely=0.375)
         botao_comprar = Button(frame_botoes, text="Comprar Carta", command=self.comprar_carta) 
         botao_comprar.place(relx=0.5, rely=0.2, anchor="center")
         botao_passar_turno = Button(frame_botoes, text="Passar Turno", command=self.passar_turno)
@@ -135,34 +130,35 @@ class AtorJogadorInterface(DogPlayerInterface):
             for carta in cartas_mao:
                 if carta.cor_primaria == 'preto':
                     imagem = f'{carta.tipo}'
-                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))   
+                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c), fg_color="#b5b942", hover_color="#b5b942")   
                     btn.carta = carta
                     self.dict_btn_cartas[carta] = btn
 
                 else:
                     imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))
+                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c), fg_color="#b5b942", hover_color="#b5b942")
                     btn.carta = carta
                     self.dict_btn_cartas[carta] = btn
-                btn.pack(side="left", padx=10, pady=5, anchor="center")
+                btn.pack(side="left", padx=10, anchor="center")
         else:
-            imagem = Label(frame, image=self.dict_cards['fundo_carta'], padx=50)
-            imagem.pack(side="left", padx=10, pady=5,anchor="center") 
+            for carta in jogador.mao:
+                imagem = customtkinter.CTkLabel(master=frame, image=self.dict_cards['fundo_carta'], text="")
+                imagem.pack(side="left", padx=10,anchor="center")
 
 
     def adiciona_cartas_compradas_ao_jogador_design(self, lista_cartas_compradas, frame):
         for carta in lista_cartas_compradas:
             if carta.cor_primaria == 'preto':
                 imagem = f'{carta.tipo}'
-                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))  
+                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c), fg_color="#b5b942", hover_color="#b5b942")  
                 self.dict_btn_cartas[carta] = btn
                 
             else:
                 imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c))
+                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c), fg_color="#b5b942", hover_color="#b5b942")
                 self.dict_btn_cartas[carta] = btn
 
-            btn.pack(side="left", padx=10, pady=5, anchor="center")                    
+            btn.pack(side="left", padx=10, anchor="center")                    
 
 
     def comprar_carta(self):
@@ -254,8 +250,7 @@ class AtorJogadorInterface(DogPlayerInterface):
             image_background = Image.open(f'src/menu_images/rainbow_bg.png')
             self.dict_cards[f"rainbow_bg"] = ImageTk.PhotoImage(image_background)
 
-            fundo_carta = Image.open(f'src/menu_images/fundo_carta.jpeg')
-            self.dict_cards[f"fundo_carta"] = ImageTk.PhotoImage(fundo_carta)
+            self.dict_cards[f"fundo_carta"] = customtkinter.CTkImage(Image.open(f'src/menu_images/fundo_carta.png'), size=(100, 150))
     
     def cria_chave_para_ultima_carta(self):
         if isinstance(self.tabuleiro.ultima_carta, CartaNormal):
