@@ -25,6 +25,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.dict_frames = {}
         self.dict_btn_cartas = {}
         self.jogada = None
+        self.flag_especial = False #atributo auxiliar para comportamento no passar turno
         self.criar_tkinter_images()
         self.start_menu()
 
@@ -36,24 +37,36 @@ class AtorJogadorInterface(DogPlayerInterface):
 
     def receive_move(self, a_move: dict):
         if a_move["type"] == "init":
-            self.tabuleiro.atualizar_jogadores(a_move) 
-            self.tabuleiro.atualizar_cartas_tabuleiro(a_move)
-            self.tela_partida_design()
+            self.aux_atualizar(a_move) #movi o comportamento que tinha nesses if's para o método de baixo, para auxiliar a compreensão do código. O comportamento permanece o msm
+        
         elif a_move["type"] == "block":
-            pass
+            self.aux_atualizar(a_move)
+            if a_move["ultima_carta_tabuleiro"]["ja_satisfeita"] == False:
+                self.flag_especial = True
+                messagebox.showinfo(message="Você foi bloqueado!")
+                self.passar_turno()
+
         elif a_move["type"] == "draw":
-            pass
+            self.aux_atualizar(a_move)
+            if a_move["ultima_carta_tabuleiro"]["ja_satisfeita"] == False:
+                self.flag_especial = True
+                messagebox.showinfo(message="Você comprou várias cartas!")
+                self.comprar_carta()
+        
         elif a_move["type"] == "pass":
             self.tabuleiro.jogador_atual = a_move["jogador_atual"]
-            self.tabuleiro.atualizar_cartas_tabuleiro(a_move)
-            self.tabuleiro.atualizar_jogadores(a_move) 
-            self.tela_partida_design()
+            self.aux_atualizar(a_move)
 
         elif a_move["type"] == "end":
             pass
         # elif a_move["type"] == "+1": ===> CRIAR UM TIPO DE JOGADA MAIS UM PARA CRIAR VERIFICACAO DE QUANDO JOGADOR TEM QUE COMPRAR O CONTADOR
         #     pass
     
+    def aux_atualizar(self, a_move):
+        self.tabuleiro.atualizar_jogadores(a_move) 
+        self.tabuleiro.atualizar_cartas_tabuleiro(a_move)
+        self.tela_partida_design()
+
     def receive_withdrawal_notification(self):
         self.show_screen_disconnect()
     
@@ -187,6 +200,19 @@ class AtorJogadorInterface(DogPlayerInterface):
     def passar_turno(self):
         self.tabuleiro.jogador_atual = (self.tabuleiro.jogador_atual + 1) % 3
         self.tabuleiro.ultima_carta = self.jogada.get_ultima_carta_encadeamento()
+
+        if isinstance(self.tabuleiro.ultima_carta, CartaEspecial):
+            # aqui eu estou criando objeto carta especial com o atributo já satisfeta = True, para que na hora de converter pra dict, ele converta como true
+            if self.flag_especial == True: 
+                if self.tabuleiro.ultima_carta.tipo == 'block':
+                    self.tabuleiro.ultima_carta = CartaEspecial('preto', 'block')
+                    self.tabuleiro.ultima_carta.ja_satisfeita = True
+
+                if self.tabuleiro.ultima_carta.tipo == 'mais-um':
+                    self.tabuleiro.ultima_carta = CartaEspecial('preto', 'mais-um')
+                    self.tabuleiro.ultima_carta.ja_satisfeita = True
+            self.flag_especial = False
+
         self.jogada = None
         move = self.tabuleiro.transforma_jogada_para_move("pass")
         self.__dog_server_interface.send_move(move)

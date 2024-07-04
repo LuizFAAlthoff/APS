@@ -158,7 +158,6 @@ class Tabuleiro:
             jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
             jogada["jogadores"] = self.jogadores_to_dict() 
 
-
         return jogada
     
     def jogadores_to_dict(self):
