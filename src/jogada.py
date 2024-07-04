@@ -1,5 +1,5 @@
 from carta_especial import CartaEspecial
-
+from tkinter import messagebox
 
 class Jogada():
     def __init__(self, jogador, carta_recente_tabuleiro):
@@ -43,11 +43,8 @@ class Jogada():
     def __del__(self):
         print(f"Jogada do jogador {self.__jogador.nome} foi deletada")
 
-    def ainda_pode_jogar_qtd_maxima(self):
-        if len(self.__cartas_encadeamento) <= 3:
-            return True
-        else:
-            return False
+    def encadeamento_atual_menor_que_3(self):
+        return len(self.__cartas_encadeamento) < 3
         
     def ainda_nao_jogou(self):
         if len(self.__cartas_encadeamento) == 0:
@@ -55,26 +52,26 @@ class Jogada():
         else:
             return False
     
-    def get_carta_mais_recente(self):
+    def get_ultima_carta_encadeamento(self):
         return self.__cartas_encadeamento[-1]
     
     def verificar_condicao_de_vitoria(self):
-        if len(self.__jogador.mao_cartas) - len(self.__cartas_encadeamento) == 0:
+        if len(self.__jogador.mao) - len(self.__cartas_encadeamento) == 0:
             self.__jogada_vencedora = True
             return True
     
     def verificar_existencia_especial_no_encadeamento(self):
         for carta in self.__cartas_encadeamento:
-            if carta.tipo == "especial":
+            if isinstance(carta, CartaEspecial):
                 return True
         return False
 
     def add_carta_encadeamento(self, carta):
-        self.__jogador.mao_cartas.pop(0) #por enquanto, só remove a carta inicial da lista, e não a carta específica da jogada
+        self.__jogador.mao.remove(carta)
         self.__cartas_encadeamento.append(carta)
 
     def verificar_se_eh_ultima_carta(self):
-        if len(self.__jogador.mao_cartas) == 1:
+        if len(self.__jogador.mao) == 1:
             return True
         else:
             return False
@@ -85,12 +82,12 @@ class Jogada():
         else:
             return
 
-    def checar_atributos(self, carta_para_jogar, carta_mais_recente):
+    def checar_compatibilidade(self, carta_para_jogar, carta_mais_recente, pode_numero):
         carta_eh_valida = False
         if isinstance(carta_mais_recente, CartaEspecial):
             print("Carta compatível porque a carta anterior é especial")
             carta_eh_valida = True
-        elif len(self.__cartas_encadeamento) == 0 and carta_para_jogar.numero == carta_mais_recente.numero:
+        elif pode_numero and carta_para_jogar.numero == carta_mais_recente.numero:
             print("Carta compatível com a anterior porque é a primeira carta e números são iguais")
             carta_eh_valida = True
         elif carta_mais_recente.cor_primaria == carta_para_jogar.cor_primaria:
@@ -111,10 +108,10 @@ class Jogada():
 
         return carta_eh_valida
             
-        
+
 
     def verificar_carta(self, carta_para_jogar):
-        if self.ainda_pode_jogar_qtd_maxima:                        #verifica se seq max ainda não foi atingida
+        if self.encadeamento_atual_menor_que_3():                        #verifica se seq max ainda não foi atingida
             if self.verificar_existencia_especial_no_encadeamento():    #caso exista carta especial no encadeamento, retorna False
                 print("Carta especial não pode ser jogada no meio de uma sequência")
                 return False
@@ -131,13 +128,16 @@ class Jogada():
             else:                                                       #caso a carta a ser jogada não seja especial, ela é normal
                 if self.verificar_se_lista_encadeamento_esta_vazia():       #verifica se a lista de encadeamento está vazia
                     print("Pegou carta mais recente do tabuleiro")
+                    pode_numero = True
                     carta_mais_recente = self.carta_recente_tabuleiro           #pega a carta mais recente a partir do parametro recebido pelo tabuleiro
-                    self.checar_atributos(carta_para_jogar, carta_mais_recente) #checa se a carta a ser jogada é compatível com a carta mais recente
+                    return self.checar_compatibilidade(carta_para_jogar, carta_mais_recente, pode_numero) #checa se a carta a ser jogada é compatível com a carta mais recente
+                        
                 else:
                     print("Pegou carta mais recente da lista de encadeamento")
-                    carta_mais_recente = self.get_carta_mais_recente()          #pega a carta mais recente a partir da lista de encadeamento
-                    if self.checar_atributos(carta_para_jogar, carta_mais_recente): #checa se a carta a ser jogada é compatível com a carta mais recente
+                    carta_mais_recente = self.get_ultima_carta_encadeamento()          #pega a carta mais recente a partir da lista de encadeamento
+                    pode_numero = False
+                    if self.checar_compatibilidade(carta_para_jogar, carta_mais_recente, pode_numero): #checa se a carta a ser jogada é compatível com a carta mais recente
                         return True                                             #caso seja compatível, retorna True
         else:                                                       #caso a seq max tenha sido atingida, retorna False
-            print("Sequência máxima de cartas atingida")
+            messagebox.showwarning("Atenção", "Encadeamento máximo atingido")
             return False

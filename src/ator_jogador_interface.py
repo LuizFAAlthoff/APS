@@ -24,6 +24,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.dict_cards = {}
         self.dict_frames = {}
         self.dict_btn_cartas = {}
+        self.jogada = None
         self.criar_tkinter_images()
         self.start_menu()
 
@@ -45,6 +46,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         elif a_move["type"] == "pass":
             self.tabuleiro.jogador_atual = a_move["jogador_atual"]
             self.tabuleiro.atualizar_cartas_tabuleiro(a_move)
+            self.tabuleiro.atualizar_jogadores(a_move) 
             self.tela_partida_design()
 
         elif a_move["type"] == "end":
@@ -64,6 +66,7 @@ class AtorJogadorInterface(DogPlayerInterface):
             jogadores = start_status.get_players()
             id_jogador_local = start_status.get_local_id()
             dict_inicial =  self.tabuleiro.comecar_partida(jogadores, id_jogador_local)
+            print(dict_inicial["jogadores"])
             self.__dog_server_interface.send_move(dict_inicial)
             # self.__jogo.configurarJogadores()
             # self.__mensagem = self.__jogo.getJogadores()[self.__jogo.getLocalPosition()].getNome()
@@ -84,11 +87,13 @@ class AtorJogadorInterface(DogPlayerInterface):
         frame_jogador_local.place(relwidth=0.9, relheight=0.35, relx=0.05, rely=0.65)
         self.dict_frames["jogador_local"] = frame_jogador_local
 
-        frame_jogador2 = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_dois].nome}\n{len(self.tabuleiro.jogadores[self.tabuleiro.jogador_dois].mao)} cartas", label_fg_color="#b5b942",label_text_color="black",label_font=("helvetica", 14, "bold"),fg_color="#b5b942")
+        jogador_frame_2 = self.tabuleiro.jogadores[(self.tabuleiro.jogador_local +1) % 3]
+        frame_jogador2 = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{jogador_frame_2.nome}\n{len(jogador_frame_2.mao)} cartas", label_fg_color="#b5b942",label_text_color="black",label_font=("helvetica", 14, "bold"),fg_color="#b5b942")
         frame_jogador2.place(relwidth=0.4, relheight=0.3, relx=0.05, rely=0.0)
         self.dict_frames["jogador2"] = frame_jogador2
 
-        frame_jogador3 = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{self.tabuleiro.jogadores[self.tabuleiro.jogador_tres].nome}\n{len(self.tabuleiro.jogadores[self.tabuleiro.jogador_tres].mao)} cartas", label_fg_color="#b5b942",label_text_color="black",label_font=("helvetica", 14, "bold"),fg_color="#b5b942")
+        jogador_frame_3 = self.tabuleiro.jogadores[(self.tabuleiro.jogador_local +2) % 3]
+        frame_jogador3 = customtkinter.CTkScrollableFrame(master=self.canvas, orientation="horizontal", label_text=f"{jogador_frame_3.nome}\n{len(jogador_frame_3.mao)} cartas", label_fg_color="#b5b942",label_text_color="black",label_font=("helvetica", 14, "bold"),fg_color="#b5b942")
         frame_jogador3.place(relwidth=0.4, relheight=0.3, relx=0.55, rely=0.0)
         self.dict_frames["jogador3"] = frame_jogador3
 
@@ -107,7 +112,6 @@ class AtorJogadorInterface(DogPlayerInterface):
         label_carta.pack(expand=True)
         self.dict_frames["frame_central"] = frame_central
         
-
         frame_botoes = Frame(self.canvas, bg="#b5b942")
         frame_botoes.place(relwidth=0.1, relheight=0.2, relx=0.85, rely=0.375)
         botao_comprar = Button(frame_botoes, text="Comprar Carta", command=self.comprar_carta) 
@@ -117,8 +121,8 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.dict_frames["frame_botoes"] = frame_botoes
         
         self.adiciona_cartas_iniciais_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_local], frame_jogador_local)
-        self.adiciona_cartas_iniciais_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_dois], frame_jogador2)
-        self.adiciona_cartas_iniciais_ao_jogador_design(self.tabuleiro.jogadores[self.tabuleiro.jogador_tres], frame_jogador3)
+        self.adiciona_cartas_iniciais_ao_jogador_design(jogador_frame_2, frame_jogador2)
+        self.adiciona_cartas_iniciais_ao_jogador_design(jogador_frame_3, frame_jogador3)
 
     # def add_contador_cartas_mais_um(self):
     #     self.tabuleiro.add_contador_cartas_mais_um()
@@ -130,13 +134,13 @@ class AtorJogadorInterface(DogPlayerInterface):
             for carta in cartas_mao:
                 if carta.cor_primaria == 'preto':
                     imagem = f'{carta.tipo}'
-                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c), fg_color="#b5b942", hover_color="#b5b942")   
+                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.realizar_jogada(c), fg_color="#b5b942", hover_color="#b5b942")   
                     btn.carta = carta
                     self.dict_btn_cartas[carta] = btn
 
                 else:
                     imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c), fg_color="#b5b942", hover_color="#b5b942")
+                    btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.realizar_jogada(c), fg_color="#b5b942", hover_color="#b5b942")
                     btn.carta = carta
                     self.dict_btn_cartas[carta] = btn
                 btn.pack(side="left", padx=10, anchor="center")
@@ -150,12 +154,12 @@ class AtorJogadorInterface(DogPlayerInterface):
         for carta in lista_cartas_compradas:
             if carta.cor_primaria == 'preto':
                 imagem = f'{carta.tipo}'
-                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c), fg_color="#b5b942", hover_color="#b5b942")  
+                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.realizar_jogada(c), fg_color="#b5b942", hover_color="#b5b942")  
                 self.dict_btn_cartas[carta] = btn
                 
             else:
                 imagem = f'{carta.numero}-{carta.cor_primaria}-{carta.cor_secundaria}'
-                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.jogar(c), fg_color="#b5b942", hover_color="#b5b942")
+                btn = customtkinter.CTkButton(master=frame, image=self.dict_cards[imagem], text="", command=lambda c=carta: self.realizar_jogada(c), fg_color="#b5b942", hover_color="#b5b942")
                 self.dict_btn_cartas[carta] = btn
 
             btn.pack(side="left", padx=10, anchor="center")                    
@@ -182,15 +186,23 @@ class AtorJogadorInterface(DogPlayerInterface):
 
     def passar_turno(self):
         self.tabuleiro.jogador_atual = (self.tabuleiro.jogador_atual + 1) % 3
+        self.tabuleiro.ultima_carta = self.jogada.get_ultima_carta_encadeamento()
+        self.jogada = None
         move = self.tabuleiro.transforma_jogada_para_move("pass")
         self.__dog_server_interface.send_move(move)
         self.tela_partida_design()
 
 
-    def jogar(self, carta):
+    def realizar_jogada(self, carta):
         if self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
-            # ao entrar nessa função, carta é a carta que foi clicada pelo usuario na interface
-            #precisa implementar logica para encadeamento de cartas
+            if self.jogada == None:
+                self.jogada = Jogada(self.tabuleiro.jogadores[self.tabuleiro.jogador_atual], self.tabuleiro.ultima_carta)
+            if self.jogada.verificar_carta(carta):
+                self.jogada.add_carta_encadeamento(carta)
+                self.remove_botao_carta(carta)
+                self.tabuleiro.jogadores[self.tabuleiro.jogador_atual] = self.jogada.jogador
+                return
+            messagebox.showwarning("Atenção", "Carta inválida")
             x=1
         else: 
             messagebox.showwarning("Espere", "Não é a sua vez de jogar")
@@ -252,6 +264,7 @@ class AtorJogadorInterface(DogPlayerInterface):
 
             self.dict_cards[f"fundo_carta"] = customtkinter.CTkImage(Image.open(f'src/menu_images/fundo_carta.png'), size=(100, 150))
     
+
     def cria_chave_para_ultima_carta(self):
         if isinstance(self.tabuleiro.ultima_carta, CartaNormal):
             return  f'{self.tabuleiro.ultima_carta.numero}-{self.tabuleiro.ultima_carta.cor_primaria}-{self.tabuleiro.ultima_carta.cor_secundaria}'

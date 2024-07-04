@@ -11,13 +11,16 @@ class Tabuleiro:
         self.__contador_cartas_mais_um = 0 #se quiser testar comprar cartas do contador, adicione um valor para o contador aqui
         self.__jogadores = [0, 0, 0]
         self.__jogador_local = 0
-        self.__jogador_dois = 0
-        self.__jogador_tres = 0
         self.__primeira_acao = True
         self.__jogador_atual = 0
         self.__local_id = ""
         self.__ultima_carta = self.__baralho.get_carta_normal_aleatoria()
+        self.cartas_encadeadas = []
         # self.__ultima_carta = self.__baralho.get_carta_especial_aleatoria() se quiser testar o contador descomente essa função
+    
+    @property
+    def ultima_carta(self):
+        return self.__ultima_carta
     
     @property
     def ultima_carta(self):
@@ -26,14 +29,6 @@ class Tabuleiro:
     @property
     def jogador_local(self):
         return self.__jogador_local
-    
-    @property
-    def jogador_dois(self):
-        return self.__jogador_dois
-    
-    @property
-    def jogador_tres(self):
-        return self.__jogador_tres
     
     @property
     def lista_cartas(self):
@@ -75,13 +70,6 @@ class Tabuleiro:
     def jogador_local(self, jogador_local):
         self.__jogador_local = jogador_local
 
-    @jogador_dois.setter
-    def jogador_dois(self, jogador_dois):
-        self.__jogador_dois = jogador_dois  
-
-    @jogador_tres.setter
-    def jogador_tres(self, jogador_tres):
-        self.__jogador_tres = jogador_tres                
     
     @contador_cartas_mais_um.setter
     def contador_cartas_mais_um(self, contador_cartas_mais_um):
@@ -120,23 +108,12 @@ class Tabuleiro:
             self.jogadores[i] = jogador_criado
             if jogador_criado.id == self.local_id:
                 self.jogador_local = i
-            else:
-                if self.jogador_dois == 0:
-                    self.jogador_dois = i
-                else:
-                    self.jogador_tres = i
         self.jogador_atual = self.jogador_local
 
     def atualizar_posicoes_jogadores(self, jogador_atual):
         for i, jogador in enumerate(self.jogadores):
-            x=1
             if jogador.id == self.local_id:
                 self.jogador_local = i
-            else:
-                if self.jogador_dois == 0:
-                    self.jogador_dois = i
-                else:
-                    self.jogador_tres = i
         self.jogador_atual = jogador_atual
 
     def atualizar_jogadores(self, a_move):
@@ -179,6 +156,8 @@ class Tabuleiro:
             if self.ultima_carta is not None:
                 jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
             jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
+            jogada["jogadores"] = self.jogadores_to_dict() 
+
 
         return jogada
     
