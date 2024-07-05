@@ -64,7 +64,7 @@ class AtorJogadorInterface(DogPlayerInterface):
 
         elif a_move["type"] == "vitoria":
             jogador_atual = a_move["jogador_atual"]
-            msg = f"O Jogador {self.tabuleiro.jogadores[jogador_atual % 3].nome} ganhou"
+            msg = f"O Jogador {self.tabuleiro.jogadores[(jogador_atual -1) % 3].nome} ganhou"
             messagebox.showinfo("Vitória", msg)
             self.tela_partida_design()
 
@@ -195,10 +195,13 @@ class AtorJogadorInterface(DogPlayerInterface):
                 self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
                 cartas_compradas.append(carta_comprada)
                 self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
-        elif not self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
-            messagebox.showwarning("Atenção", "Não é sua vez de jogar")
-        else:
+
+        elif self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
             messagebox.showwarning("Atenção", "Você foi bloqueado, passe o turno")
+        else:
+            messagebox.showwarning("Atenção", "Não é sua vez de jogar")
+
+            
 
 
     def passar_turno(self):
@@ -264,8 +267,11 @@ class AtorJogadorInterface(DogPlayerInterface):
                     messagebox.showwarning("Atenção", "Carta inválida")
                 else: 
                     messagebox.showwarning("Espere", "Não é a sua vez de jogar")
-            else:
+            elif self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
                 messagebox.showwarning("Atenção", "Você foi bloqueado, passe o turno")
+            else: 
+                messagebox.showwarning("Espere", "Não é a sua vez de jogar")
+
 
         else:
             messagebox.showwarning("Atenção", "Você precisa comprar a quantidade de cartas do contador")
