@@ -16,6 +16,7 @@ class Tabuleiro:
         self.__local_id = ""
         self.__ultima_carta = self.__baralho.get_carta_normal_aleatoria()
         self.cartas_encadeadas = []
+        self.bloqueado = False
         # self.__ultima_carta = self.__baralho.get_carta_especial_aleatoria() se quiser testar o contador descomente essa função
     
     @property
@@ -149,7 +150,18 @@ class Tabuleiro:
             jogada["primeira_acao"] = self.__primeira_acao # talvez remover, nao esta sendo usado
             jogada["jogadores"] = self.jogadores_to_dict() 
 
-        elif tipo_jogada == "pass":
+        elif tipo_jogada == "passar_turno":
+            jogada["type"] = tipo_jogada
+            jogada["match_status"] = "progress"
+            jogada["jogador_atual"] = self.jogador_atual
+            if self.ultima_carta is not None:
+                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
+            jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
+            jogada["jogadores"] = self.jogadores_to_dict() 
+            jogada["bloqueado"] = self.bloqueado
+
+
+        elif tipo_jogada == "bloquear":
             jogada["type"] = tipo_jogada
             jogada["match_status"] = "progress"
             jogada["jogador_atual"] = self.jogador_atual
@@ -158,7 +170,14 @@ class Tabuleiro:
             jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
             jogada["jogadores"] = self.jogadores_to_dict() 
 
-
+        elif tipo_jogada == "mais-um":
+            jogada["type"] = tipo_jogada
+            jogada["match_status"] = "progress"
+            jogada["jogador_atual"] = self.jogador_atual
+            if self.ultima_carta is not None:
+                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
+            jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
+            jogada["jogadores"] = self.jogadores_to_dict() 
         return jogada
     
     def jogadores_to_dict(self):

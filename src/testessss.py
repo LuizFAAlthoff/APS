@@ -13,7 +13,7 @@ from carta_especial import CartaEspecial
 from jogada import Jogada
 import customtkinter
 
-cartas = [CartaEspecial("preto", "mais-um"), CartaEspecial("preto", "block"), CartaNormal("vermelho", "laranja", 1), CartaNormal("azul", "laranja", 2), CartaNormal("roxo", "verde", 3)]
+cartas = [CartaEspecial("preto", "mais-um"), CartaEspecial("preto", "bloquear"), CartaNormal("vermelho", "laranja", 1), CartaNormal("azul", "laranja", 2), CartaNormal("roxo", "verde", 3)]
 root = customtkinter.CTk()
 
 root.geometry("600x400")

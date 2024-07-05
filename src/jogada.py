@@ -53,7 +53,7 @@ class Jogada():
             return False
     
     def get_ultima_carta_encadeamento(self):
-        return self.__cartas_encadeamento[-1]
+        return self.cartas_encadeamento[-1]
     
     def verificar_condicao_de_vitoria(self):
         if len(self.__jogador.mao) - len(self.__cartas_encadeamento) == 0:

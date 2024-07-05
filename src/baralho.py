@@ -39,7 +39,7 @@ class Baralho():
 
         for numero in range(7):                     #cria as 14 cartas especiais e as adiciona numa lista de cartas especiais
             lista_cartas_especiais.append(CartaEspecial('preto', 'mais-um'))
-            lista_cartas_especiais.append(CartaEspecial('preto', 'block'))
+            lista_cartas_especiais.append(CartaEspecial('preto', 'bloquear'))
         
         self.__cartas.extend(lista_cartas_comuns)  #adiciona as cartas comuns e especiais ao baralho via extend. É importante usar extend para evitar termos duas sublistas
         self.__cartas.extend(lista_cartas_especiais)    #as primeiras cartas do baralho são as comuns e as últimas são as especiais, 

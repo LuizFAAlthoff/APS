@@ -19,7 +19,6 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.dog_server_interface = DogActor()
         self.window = window.getWindow()
         self.window.title("Rainbow Cards")
-        self.bloqueado = False
         self.tabuleiro  = Tabuleiro(Baralho())
         self.dict_cards = {}
         self.dict_frames = {}
@@ -39,11 +38,22 @@ class AtorJogadorInterface(DogPlayerInterface):
             self.tabuleiro.atualizar_jogadores(a_move) 
             self.tabuleiro.atualizar_cartas_tabuleiro(a_move)
             self.tela_partida_design()
-        elif a_move["type"] == "block":
-            pass
-        elif a_move["type"] == "draw":
-            pass
-        elif a_move["type"] == "pass":
+        elif a_move["type"] == "bloquear":
+            self.tabuleiro.jogador_atual = a_move["jogador_atual"]
+            self.tabuleiro.atualizar_cartas_tabuleiro(a_move)
+            self.tabuleiro.atualizar_jogadores(a_move) 
+            self.tabuleiro.bloqueado = True
+            self.tela_partida_design()
+            if self.tabuleiro.jogador_atual == self.tabuleiro.jogador_local:
+                messagebox.showwarning("Atenção", "Você foi bloqueado, passe o turno")
+        elif a_move["type"] == "mais-um":
+            self.tabuleiro.jogador_atual = a_move["jogador_atual"]
+            self.tabuleiro.atualizar_cartas_tabuleiro(a_move)
+            self.tabuleiro.atualizar_jogadores(a_move) 
+            self.tela_partida_design()
+            
+        elif a_move["type"] == "passar_turno":
+            self.tabuleiro.bloqueado =  a_move["bloqueado"]
             self.tabuleiro.jogador_atual = a_move["jogador_atual"]
             self.tabuleiro.atualizar_cartas_tabuleiro(a_move)
             self.tabuleiro.atualizar_jogadores(a_move) 
@@ -66,7 +76,6 @@ class AtorJogadorInterface(DogPlayerInterface):
             jogadores = start_status.get_players()
             id_jogador_local = start_status.get_local_id()
             dict_inicial =  self.tabuleiro.comecar_partida(jogadores, id_jogador_local)
-            print(dict_inicial["jogadores"])
             self.__dog_server_interface.send_move(dict_inicial)
             # self.__jogo.configurarJogadores()
             # self.__mensagem = self.__jogo.getJogadores()[self.__jogo.getLocalPosition()].getNome()
@@ -166,46 +175,84 @@ class AtorJogadorInterface(DogPlayerInterface):
 
 
     def comprar_carta(self):
-        if isinstance(self.tabuleiro.ultima_carta, CartaEspecial):
-            if self.tabuleiro.ultima_carta.tipo == 'mais-um':
-                if self.tabuleiro.ultima_carta.ja_satisfeita == False:
+        if self.tabuleiro.bloqueado == False:
+            if isinstance(self.tabuleiro.ultima_carta, CartaEspecial):
+                if self.tabuleiro.ultima_carta.tipo == 'mais-um':
+                    if self.tabuleiro.ultima_carta.ja_satisfeita == False:
+                        cartas_compradas = []
+                        for _ in range(self.tabuleiro.contador_cartas_mais_um):
+                            carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
+                            self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
+                            cartas_compradas.append(carta_comprada)
+                        self.tabuleiro.ultima_carta.ja_satisfeita = True
+                        self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
+                else:
                     cartas_compradas = []
-                    for _ in range(self.tabuleiro.contador_cartas_mais_um):
-                        carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
-                        self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
-                        cartas_compradas.append(carta_comprada)
-                    self.tabuleiro.ultima_carta.ja_satisfeita = True
+                    carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
+                    self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
+                    cartas_compradas.append(carta_comprada)
+                    self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
+            else:
+                    cartas_compradas = []
+                    carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
+                    self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
+                    cartas_compradas.append(carta_comprada)
                     self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
         else:
-            cartas_compradas = []
-            carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
-            self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
-            cartas_compradas.append(carta_comprada)
-            self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
+            messagebox.showwarning("Atenção", "Você foi bloqueado, passe o turno")
 
 
     def passar_turno(self):
-        self.tabuleiro.jogador_atual = (self.tabuleiro.jogador_atual + 1) % 3
-        self.tabuleiro.ultima_carta = self.jogada.get_ultima_carta_encadeamento()
-        self.jogada = None
-        move = self.tabuleiro.transforma_jogada_para_move("pass")
-        self.__dog_server_interface.send_move(move)
-        self.tela_partida_design()
+        if self.jogada != None:
+            self.tabuleiro.jogador_atual = (self.tabuleiro.jogador_atual + 1) % 3
+            self.tabuleiro.ultima_carta = self.jogada.get_ultima_carta_encadeamento()
+            self.jogada = None
+            if isinstance(self.tabuleiro.ultima_carta, CartaEspecial):
+                if self.tabuleiro.ultima_carta.tipo == "bloquear":
+                    move = self.tabuleiro.transforma_jogada_para_move("bloquear")
+                    self.__dog_server_interface.send_move(move)
+                    self.tela_partida_design()
+                    return
+                else:
+                    self.tabuleiro.add_contador_cartas_mais_um()
+                    move = self.tabuleiro.transforma_jogada_para_move("mais-um")
+                    self.__dog_server_interface.send_move(move)
+                    self.tela_partida_design()
+                    return
+            else:
+                self.tabuleiro.bloqueado = False
+                move = self.tabuleiro.transforma_jogada_para_move("passar_turno")
+                self.__dog_server_interface.send_move(move)
+                self.tela_partida_design()
+                return            
+        
+        elif self.tabuleiro.bloqueado:
+            self.tabuleiro.jogador_atual = (self.tabuleiro.jogador_atual + 1) % 3
+            self.tabuleiro.bloqueado = False
+            move = self.tabuleiro.transforma_jogada_para_move("passar_turno")
+            self.__dog_server_interface.send_move(move)
+            self.tela_partida_design()
+            return
+            
+        else:
+            messagebox.showwarning("Atenção", "Você deve jogar uma carta")
 
 
     def realizar_jogada(self, carta):
-        if self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
-            if self.jogada == None:
-                self.jogada = Jogada(self.tabuleiro.jogadores[self.tabuleiro.jogador_atual], self.tabuleiro.ultima_carta)
-            if self.jogada.verificar_carta(carta):
-                self.jogada.add_carta_encadeamento(carta)
-                self.remove_botao_carta(carta)
-                self.tabuleiro.jogadores[self.tabuleiro.jogador_atual] = self.jogada.jogador
-                return
-            messagebox.showwarning("Atenção", "Carta inválida")
-            x=1
-        else: 
-            messagebox.showwarning("Espere", "Não é a sua vez de jogar")
+        if self.tabuleiro.bloqueado == False:
+            if self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
+                if self.jogada == None:
+                    self.jogada = Jogada(self.tabuleiro.jogadores[self.tabuleiro.jogador_atual], self.tabuleiro.ultima_carta)
+                if self.jogada.verificar_carta(carta):
+                    self.jogada.add_carta_encadeamento(carta)
+                    self.remove_botao_carta(carta)
+                    self.tabuleiro.jogadores[self.tabuleiro.jogador_atual] = self.jogada.jogador
+                    return
+                messagebox.showwarning("Atenção", "Carta inválida")
+            else: 
+                messagebox.showwarning("Espere", "Não é a sua vez de jogar")
+        else:
+            messagebox.showwarning("Atenção", "Você foi bloqueado, passe o turno")
 
 
     def remove_botao_carta(self, carta):
@@ -223,7 +270,7 @@ class AtorJogadorInterface(DogPlayerInterface):
     
     def create_menu_design(self): #MUDAR NOME DE FUNÇÃO
         self.background_img = PhotoImage(file = f"src/menu_images/background.png")
-        background = self.canvas.create_image(0, 0,image=self.background_img,anchor="nw")
+        self.canvas.create_image(0, 0,image=self.background_img,anchor="nw")
         self.button_menu = PhotoImage(file = f"src/menu_images/img0.png")
         button_start = self.canvas.create_image(270, 570, image=self.button_menu)
         self.canvas.tag_bind(button_start, "<Button-1>", lambda x: self.start_match())
