@@ -57,8 +57,7 @@ class Baralho():
             else:
                 carta_dict = {
                     'cor_primaria': carta.cor_primaria,
-                    'tipo': carta.tipo,
-                    'ja_satisfeita': carta.ja_satisfeita
+                    'tipo': carta.tipo
                 }
             baralho['cartas'].append(carta_dict)
         return

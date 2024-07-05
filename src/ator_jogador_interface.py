@@ -31,7 +31,6 @@ class AtorJogadorInterface(DogPlayerInterface):
     def receive_start(self, start_status):
         self.tabuleiro.set_local_id(start_status.get_local_id())
         self.set_canvas()
-        # self.tela_partida_design()
 
     def receive_move(self, a_move: dict):
         if a_move["type"] == "init":
@@ -65,7 +64,7 @@ class AtorJogadorInterface(DogPlayerInterface):
 
         elif a_move["type"] == "vitoria":
             jogador_atual = a_move["jogador_atual"]
-            msg = f"O Jogador{self.tabuleiro.jogadores[jogador_atual].nome} ganhou"
+            msg = f"O Jogador {self.tabuleiro.jogadores[jogador_atual % 3].nome} ganhou"
             messagebox.showinfo("Vitória", msg)
             self.tela_partida_design()
 
@@ -134,9 +133,6 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.adiciona_cartas_iniciais_ao_jogador_design(jogador_frame_2, frame_jogador2)
         self.adiciona_cartas_iniciais_ao_jogador_design(jogador_frame_3, frame_jogador3)
 
-    # def add_contador_cartas_mais_um(self):
-    #     self.tabuleiro.add_contador_cartas_mais_um()
-    #     self.valor_contador = self.tabuleiro.contador_cartas_mais_um
     
     def adiciona_cartas_iniciais_ao_jogador_design(self, jogador, frame):
         cartas_mao = jogador.mao 
@@ -199,6 +195,8 @@ class AtorJogadorInterface(DogPlayerInterface):
                 self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
                 cartas_compradas.append(carta_comprada)
                 self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
+        elif not self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
+            messagebox.showwarning("Atenção", "Não é sua vez de jogar")
         else:
             messagebox.showwarning("Atenção", "Você foi bloqueado, passe o turno")
 
@@ -237,7 +235,6 @@ class AtorJogadorInterface(DogPlayerInterface):
                         self.__dog_server_interface.send_move(move)
                         self.tela_partida_design()
                         return
-                                    
             
             elif self.tabuleiro.bloqueado:
                 self.tabuleiro.jogador_atual = (self.tabuleiro.jogador_atual + 1) % 3
@@ -254,24 +251,22 @@ class AtorJogadorInterface(DogPlayerInterface):
 
 
     def realizar_jogada(self, carta):
-        if not self.tabuleiro.precisa_comprar_contador:   
-            if not self.tabuleiro.precisa_comprar_contador:
-                if self.tabuleiro.bloqueado == False:
-                    if self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
-                        if self.jogada == None:
-                            self.jogada = Jogada(self.tabuleiro.jogadores[self.tabuleiro.jogador_atual], self.tabuleiro.ultima_carta)
-                        if self.jogada.verificar_carta(carta):
-                            self.jogada.add_carta_encadeamento(carta)
-                            self.remove_botao_carta(carta)
-                            self.tabuleiro.jogadores[self.tabuleiro.jogador_atual] = self.jogada.jogador
-                            return
-                        messagebox.showwarning("Atenção", "Carta inválida")
-                    else: 
-                        messagebox.showwarning("Espere", "Não é a sua vez de jogar")
-                else:
-                    messagebox.showwarning("Atenção", "Você foi bloqueado, passe o turno")
+        if not self.tabuleiro.precisa_comprar_contador:
+            if self.tabuleiro.bloqueado == False:
+                if self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
+                    if self.jogada == None:
+                        self.jogada = Jogada(self.tabuleiro.jogadores[self.tabuleiro.jogador_atual], self.tabuleiro.ultima_carta)
+                    if self.jogada.verificar_carta(carta):
+                        self.jogada.add_carta_encadeamento(carta)
+                        self.remove_botao_carta(carta)
+                        self.tabuleiro.jogadores[self.tabuleiro.jogador_atual] = self.jogada.jogador
+                        return
+                    messagebox.showwarning("Atenção", "Carta inválida")
+                else: 
+                    messagebox.showwarning("Espere", "Não é a sua vez de jogar")
             else:
                 messagebox.showwarning("Atenção", "Você foi bloqueado, passe o turno")
+
         else:
             messagebox.showwarning("Atenção", "Você precisa comprar a quantidade de cartas do contador")
 
@@ -284,7 +279,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         print(btn)
 
 
-    def set_canvas(self): #DEFINE UMA ÁREA RETANGULAR NA TELA PARA MOSTRAR OS COMPONENTES DA INTERFACE
+    def set_canvas(self): 
         self.canvas = Canvas(
             self.window,bg = "#ffffff",height = 720,width = 1280,bd = 0,highlightthickness = 0,relief = "ridge")
         self.canvas.place(relx=0.5, rely=0.5, anchor=CENTER)
@@ -308,11 +303,9 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.window.mainloop()
 
     def show_screen_disconnect(self):
-        # self.__jogo.setFimJogo(True) setter de atributos da classe jogo do flip
-        # self.__jogo.setJogoAbandonado(True) setter de atributos da classe jogo do flip
         self.set_canvas()
         self.background_img = PhotoImage(file = f"src/menu_images/desconexao.png")
-        background = self.canvas.create_image(0, 0,image=self.background_img,anchor="nw")
+        self.canvas.create_image(0, 0,image=self.background_img,anchor="nw")
         sleep(3)
         self.window.destroy()
 

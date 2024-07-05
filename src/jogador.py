@@ -58,8 +58,7 @@ class Jogador:
             else:
                 carta_dict = {
                     'cor_primaria': carta.cor_primaria,
-                    'tipo': carta.tipo,
-                    'ja_satisfeita': carta.ja_satisfeita
+                    'tipo': carta.tipo
                 }
             jogador['mao'].append(carta_dict)
 
