@@ -216,7 +216,6 @@ class AtorJogadorInterface(DogPlayerInterface):
         messagebox.showwarning(titulo, mensagem)
 
 
-
     def realizar_jogada(self, carta):
         titulo, mensagem = self.tabuleiro.realizar_jogada(carta)
         if titulo == "":
