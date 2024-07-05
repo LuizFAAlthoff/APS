@@ -175,7 +175,7 @@ class AtorJogadorInterface(DogPlayerInterface):
 
 
     def comprar_carta(self):
-        if self.tabuleiro.bloqueado == False:
+        if self.tabuleiro.bloqueado == False and self.tabuleiro.eh_a_vez_do_jogador_local_jogar() :
             if isinstance(self.tabuleiro.ultima_carta, CartaEspecial):
                 if self.tabuleiro.ultima_carta.tipo == 'mais-um':
                     if self.tabuleiro.ultima_carta.ja_satisfeita == False:
