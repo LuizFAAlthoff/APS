@@ -179,6 +179,16 @@ class Tabuleiro:
                 jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
             jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
             jogada["jogadores"] = self.jogadores_to_dict() 
+
+        elif tipo_jogada == "vitoria":
+            jogada["type"] = tipo_jogada
+            jogada["match_status"] = "progress"
+            jogada["jogador_atual"] = self.jogador_atual
+            if self.ultima_carta is not None:
+                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
+            jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
+            jogada["jogadores"] = self.jogadores_to_dict() 
+
         return jogada
     
     def jogadores_to_dict(self):
