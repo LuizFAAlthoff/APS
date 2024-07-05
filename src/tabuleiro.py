@@ -17,6 +17,7 @@ class Tabuleiro:
         self.__ultima_carta = self.__baralho.get_carta_normal_aleatoria()
         self.cartas_encadeadas = []
         self.bloqueado = False
+        self.precisa_comprar_contador = False
         # self.__ultima_carta = self.__baralho.get_carta_especial_aleatoria() se quiser testar o contador descomente essa função
     
     @property
@@ -124,7 +125,6 @@ class Tabuleiro:
             for carta in jogador['mao']:
                 if carta['cor_primaria'] == 'preto':
                     carta_epecial = CartaEspecial(carta['cor_primaria'], carta['tipo'])
-                    carta_epecial.ja_satisfeita = carta['ja_satisfeita']
                     cartas_jogador.append(carta_epecial)
                 else:
                     carta_normal = CartaNormal(carta['cor_primaria'],carta['cor_secundaria'], carta['numero'])
@@ -159,6 +159,7 @@ class Tabuleiro:
             jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
             jogada["jogadores"] = self.jogadores_to_dict() 
             jogada["bloqueado"] = self.bloqueado
+            jogada["precisa_comprar_contador"] = self.precisa_comprar_contador
 
 
         elif tipo_jogada == "bloquear":
@@ -201,7 +202,6 @@ class Tabuleiro:
     def transforma_move_para_carta(self, move_carta):
         if move_carta["cor_primaria"] == 'preto':
             carta = CartaEspecial(move_carta["cor_primaria"], move_carta["tipo"])
-            carta.ja_satisfeita = move_carta["ja_satisfeita"]
             return carta
         return CartaNormal(move_carta["cor_primaria"], move_carta["cor_secundaria"], move_carta["numero"])
 
