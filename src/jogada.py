@@ -114,31 +114,32 @@ class Jogada():
 
     def verificar_carta(self, carta_para_jogar):
         carta_eh_valida = False
-        if self.encadeamento_atual_menor_que_3():                        
-            if self.verificar_existencia_especial_no_encadeamento():    
-                print("Carta especial não pode ser jogada no meio de uma sequência")
+        encadeamento_eh_menor_que_tres = self.encadeamento_atual_menor_que_3()
+        if encadeamento_eh_menor_que_tres:   
+            tem_especial_no_encadeamento = self.verificar_existencia_especial_no_encadeamento()                     
+            if tem_especial_no_encadeamento:    
                 return carta_eh_valida
-            if isinstance(carta_para_jogar, CartaEspecial):             
-                if self.verificar_se_eh_ultima_carta():                     
-                    print("Carta especial não pode ser jogada como última carta")
+            eh_especial = isinstance(carta_para_jogar, CartaEspecial)
+            if eh_especial:  
+                eh_ultima_carta =  self.verificar_se_eh_ultima_carta()         
+                if eh_ultima_carta:                     
                     return carta_eh_valida
-                else:                                                       
-                    if self.verificar_se_lista_encadeamento_esta_vazia():
+                else:
+                    lista_encadeamento_eh_vazia = self.verificar_se_lista_encadeamento_esta_vazia()                                                   
+                    if lista_encadeamento_eh_vazia:
                         carta_eh_valida = True       
                         return carta_eh_valida                                             
                     else:                                                       
-                        print("Carta especial não pode ser jogada no meio de uma sequência")
                         return carta_eh_valida
-            else:                                                       
-                if self.verificar_se_lista_encadeamento_esta_vazia():       
-                    print("Pegou carta mais recente do tabuleiro")
+            else:   
+                lista_encadeamento_eh_vazia = self.verificar_se_lista_encadeamento_esta_vazia()                                                
+                if lista_encadeamento_eh_vazia:       
                     pode_numero = True
                     carta_mais_recente = self.carta_recente_tabuleiro   
                     eh_compativel = self.checar_compatibilidade(carta_para_jogar, carta_mais_recente, pode_numero)      
                     return eh_compativel
                         
                 else:
-                    print("Pegou carta mais recente da lista de encadeamento")
                     carta_mais_recente = self.get_ultima_carta_encadeamento()          
                     pode_numero = False
                     eh_compativel = self.checar_compatibilidade(carta_para_jogar, carta_mais_recente, pode_numero)
