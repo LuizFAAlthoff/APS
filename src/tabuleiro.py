@@ -4,6 +4,7 @@ import random
 from carta_especial import CartaEspecial
 from carta_normal import CartaNormal
 from jogada import Jogada
+from tkinter import messagebox
 
 
 class Tabuleiro:
@@ -154,51 +155,51 @@ class Tabuleiro:
             jogada["match_status"] = "progress"
             jogada["baralho"] = self.__baralho.to_dict()
             jogada["jogador_atual"] = self.jogador_atual # indice do jogador atual na lista de jogadores
-            if self.ultima_carta is not None:
-                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
             jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
             jogada["primeira_acao"] = self.__primeira_acao # talvez remover, nao esta sendo usado
             jogada["jogadores"] = self.jogadores_to_dict() 
-
+            if self.ultima_carta is not None:
+                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
+            
         elif tipo_jogada == "passar_turno":
             jogada["type"] = tipo_jogada
             jogada["match_status"] = "progress"
             jogada["jogador_atual"] = self.jogador_atual
-            if self.ultima_carta is not None:
-                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
             jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
             jogada["jogadores"] = self.jogadores_to_dict() 
             jogada["bloqueado"] = self.bloqueado
             jogada["precisa_comprar_contador"] = self.precisa_comprar_contador
-
+            if self.ultima_carta is not None:
+                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
+            
 
         elif tipo_jogada == "bloquear":
             jogada["type"] = tipo_jogada
             jogada["match_status"] = "progress"
             jogada["jogador_atual"] = self.jogador_atual
-            if self.ultima_carta is not None:
-                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
             jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
             jogada["jogadores"] = self.jogadores_to_dict() 
+            if self.ultima_carta is not None:
+                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
+            
 
         elif tipo_jogada == "mais-um":
             jogada["type"] = tipo_jogada
             jogada["match_status"] = "progress"
             jogada["jogador_atual"] = self.jogador_atual
-            if self.ultima_carta is not None:
-                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
             jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
             jogada["jogadores"] = self.jogadores_to_dict() 
-
+            if self.ultima_carta is not None:
+                jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
+            
         elif tipo_jogada == "vitoria":
             jogada["type"] = tipo_jogada
             jogada["match_status"] = "progress"
             jogada["jogador_atual"] = self.jogador_atual
+            jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
+            jogada["jogadores"] = self.jogadores_to_dict()
             if self.ultima_carta is not None:
                 jogada["ultima_carta_tabuleiro"] = self.ultima_carta.to_dict()
-            jogada["contador_cartas_mais_um"] = self.contador_cartas_mais_um
-            jogada["jogadores"] = self.jogadores_to_dict() 
-
         return jogada
     
     def jogadores_to_dict(self):
@@ -241,43 +242,49 @@ class Tabuleiro:
     def eh_a_vez_do_jogador_local_jogar(self):
         return self.local_id == self.jogadores[self.jogador_atual].id
     
-    def passar_turno(self):
-        if not self.precisa_comprar_contador:
-            if self.jogada != None:
-                self.jogador_atual = (self.jogador_atual + 1) % 3
-                self.ultima_carta = self.jogada.get_ultima_carta_encadeamento()
-                if isinstance(self.ultima_carta, CartaEspecial):
-                    self.jogada = None
-                    if self.ultima_carta.tipo == "bloquear":
-                        move = self.transforma_jogada_para_move("bloquear")
-                        return "", move
-                    else:
-                        self.add_contador_cartas_mais_um()
-                        move = self.transforma_jogada_para_move("mais-um")
-                        return "", move
-                else:
-                    if self.jogada.verificar_condicao_de_vitoria():
-                        self.bloqueado = False
-                        self.jogada.jogada_vencedora = True
-                        move = self.transforma_jogada_para_move("vitoria")
-                        return "", move
+    # def passar_turno(self):
+    #     if not self.precisa_comprar_contador:
+    #         titulo = ""
+    #         move = ""
+    #         if self.jogada != None:
+    #             self.jogador_atual = (self.jogador_atual + 1) % 3
+    #             self.ultima_carta = self.jogada.get_ultima_carta_encadeamento()
+    #             if isinstance(self.ultima_carta, CartaEspecial):
+    #                 self.jogada = None
+    #                 if self.ultima_carta.tipo == "bloquear":
+    #                     move = self.transforma_jogada_para_move("bloquear")
+    #                     titulo = ""
+    #                     move = move
+    #                 else:
+    #                     self.add_contador_cartas_mais_um()
+    #                     move = self.transforma_jogada_para_move("mais-um")
+    #                     return "", move
+    #             else:
+    #                 if self.jogada.verificar_condicao_de_vitoria():
+    #                     self.bloqueado = False
+    #                     self.jogada.jogada_vencedora = True
+    #                     move = self.transforma_jogada_para_move("vitoria")
+    #                     return "", move
 
-                    else:
-                        self.bloqueado = False
-                        self.jogada = None
-                        move = self.transforma_jogada_para_move("passar_turno")
-                        return "", move
+    #                 else:
+    #                     self.bloqueado = False
+    #                     self.jogada = None
+    #                     move = self.transforma_jogada_para_move("passar_turno")
+    #                     return "", move
             
-            elif self.bloqueado:
-                self.jogador_atual = (self.jogador_atual + 1) % 3
-                self.bloqueado = False
-                move = self.transforma_jogada_para_move("passar_turno")
-                return "", move
+    #         elif self.bloqueado:
+    #             self.jogador_atual = (self.jogador_atual + 1) % 3
+    #             self.bloqueado = False
+    #             move = self.transforma_jogada_para_move("passar_turno")
+    #             return "", move
                 
-            else:
-                return "Atenção", "Você deve jogar uma carta"
-        else:
-            return "Atenção", "Você deve comprar a quantidade de cartas do contador"
+    #         else:
+    #             titulo = "Atenção"
+    #             move = "Você deve jogar uma carta"
+    #     else:
+    #         titulo = "Atenção"
+    #         move = "Você deve comprar a quantidade de cartas do contador"
+        
         
     def realizar_jogada(self, carta):
         if not self.precisa_comprar_contador:
@@ -302,7 +309,8 @@ class Tabuleiro:
 
     def comprar_carta(self):
         if self.bloqueado == False and self.eh_a_vez_do_jogador_local_jogar() :
-            if isinstance(self.ultima_carta, CartaEspecial):
+            eh_carta_especial = isinstance(self.ultima_carta, CartaEspecial)
+            if eh_carta_especial:
                 if self.ultima_carta.tipo == 'mais-um':
                     if self.precisa_comprar_contador:
                         cartas_compradas = self.comprar_em_lotes()

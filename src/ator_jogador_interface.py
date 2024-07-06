@@ -174,22 +174,53 @@ class AtorJogadorInterface(DogPlayerInterface):
         if mensagem == None:
             self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
             return
-        messagebox.showwarning("Atenção", mensagem)
+        else:
+            messagebox.showwarning("Atenção", mensagem)
 
             
     def passar_turno(self):
-        titulo, mensagem = self.tabuleiro.passar_turno()
-        if titulo == "":
-            self.__dog_server_interface.send_move(mensagem)
-            if self.tabuleiro.jogada != None and self.tabuleiro.jogada.jogada_vencedora:
-                self.__dog_server_interface.send_move(mensagem)
-                messagebox.showwarning("Vitória", "Você ganhou o jogo")
-                return
-            else:
-                self.__dog_server_interface.send_move(mensagem)
+        if not self.tabuleiro.precisa_comprar_contador:
+            if self.tabuleiro.jogada != None:
+                self.tabuleiro.jogador_atual = (self.tabuleiro.jogador_atual + 1) % 3
+                self.tabuleiro.ultima_carta = self.tabuleiro.jogada.get_ultima_carta_encadeamento()
+                if isinstance(self.tabuleiro.ultima_carta, CartaEspecial):
+                    self.tabuleiro.jogada = None
+                    if self.tabuleiro.ultima_carta.tipo == "bloquear":
+                        move = self.tabuleiro.transforma_jogada_para_move("bloquear")
+                        self.__dog_server_interface.send_move(move)
+                        self.tela_partida_design()
+                    else:
+                        self.tabuleiro.add_contador_cartas_mais_um()
+                        move = self.tabuleiro.transforma_jogada_para_move("mais-um")
+                        self.__dog_server_interface.send_move(move)
+                        self.tela_partida_design()
+                else:
+                    if self.tabuleiro.jogada.verificar_condicao_de_vitoria():
+                        self.tabuleiro.bloqueado = False
+                        self.tabuleiro.jogada = None
+                        move = self.tabuleiro.transforma_jogada_para_move("vitoria")
+                        self.__dog_server_interface.send_move(move)
+                        messagebox.showinfo("Vitória", "Você ganhou o jogo!")
+                        self.tela_partida_design()
+                    else:
+                        self.tabuleiro.bloqueado = False
+                        self.tabuleiro.jogada = None
+                        move = self.tabuleiro.transforma_jogada_para_move("passar_turno")
+                        self.__dog_server_interface.send_move(move)
+                        self.tela_partida_design()
+            
+            elif self.tabuleiro.bloqueado:
+                self.tabuleiro.jogador_atual = (self.tabuleiro.jogador_atual + 1) % 3
+                self.tabuleiro.bloqueado = False
+                move = self.tabuleiro.transforma_jogada_para_move("passar_turno")
+                self.__dog_server_interface.send_move(move)
                 self.tela_partida_design()
-                return
-        messagebox.showwarning(titulo, mensagem)
+                
+            else:
+                messagebox.showwarning("Atenção", "Você deve jogar uma carta")
+        else:
+            messagebox.showwarning("Atenção", "Você deve comprar a quantidade de cartas do contador")
+        
 
 
     def realizar_jogada(self, carta):
