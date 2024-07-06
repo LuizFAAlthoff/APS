@@ -298,3 +298,42 @@ class Tabuleiro:
                 return "Espere", "Não é a sua vez de jogar"
         else:
             return "Atenção", "Você precisa comprar a quantidade de cartas do contador"
+
+
+    def comprar_carta(self):
+        if self.bloqueado == False and self.eh_a_vez_do_jogador_local_jogar() :
+            if isinstance(self.ultima_carta, CartaEspecial):
+                if self.ultima_carta.tipo == 'mais-um':
+                    if self.precisa_comprar_contador:
+                        cartas_compradas = self.comprar_em_lotes()
+                        self.precisa_comprar_contador = False
+                        return None, cartas_compradas
+
+                else:
+                    cartas_compradas = []
+                    carta_comprada = self.baralho.get_carta_aleatoria()
+                    self.jogadores[self.jogador_local].mao.append(carta_comprada)
+                    cartas_compradas.append(carta_comprada)
+                    return None, cartas_compradas
+
+            else:
+                cartas_compradas = []
+                carta_comprada = self.baralho.get_carta_aleatoria()
+                self.jogadores[self.jogador_local].mao.append(carta_comprada)
+                cartas_compradas.append(carta_comprada)
+                return None, cartas_compradas
+
+        elif self.eh_a_vez_do_jogador_local_jogar():
+            return "Você foi bloqueado, passe o turno", None
+        else:
+            return "Não é sua vez de jogar", None
+
+
+    def comprar_em_lotes(self):
+        cartas_compradas = []
+        #carta_comprada = None --> nao eh necessario no codigo
+        for i in range(self.contador_cartas_mais_um):
+            carta_comprada = self.baralho.get_carta_aleatoria()
+            self.jogadores[self.jogador_local].mao.append(carta_comprada)
+            cartas_compradas.append(carta_comprada)
+        return cartas_compradas

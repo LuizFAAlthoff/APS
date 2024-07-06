@@ -19,7 +19,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.dog_server_interface = DogActor()
         self.window = window.getWindow()
         self.window.title("Rainbow Cards")
-        self.tabuleiro  = Tabuleiro(Baralho())
+        self.tabuleiro  = Tabuleiro(Baralho()) #bota Baralho() em uma variavel e passar a variavel pro parametro de Tabuleiro()
         self.dict_cards = {}
         self.dict_frames = {}
         self.dict_btn_cartas = {}
@@ -67,7 +67,7 @@ class AtorJogadorInterface(DogPlayerInterface):
             messagebox.showinfo("Vitória", msg)
             self.tela_partida_design()
 
- 
+
     
     def receive_withdrawal_notification(self):
         self.show_screen_disconnect()
@@ -84,7 +84,6 @@ class AtorJogadorInterface(DogPlayerInterface):
             self.__dog_server_interface.send_move(dict_inicial)
             self.set_canvas()
             self.tela_partida_design()
-            x=1
 
 
     def tela_partida_design(self):
@@ -171,34 +170,11 @@ class AtorJogadorInterface(DogPlayerInterface):
 
 
     def comprar_carta(self):
-        if self.tabuleiro.bloqueado == False and self.tabuleiro.eh_a_vez_do_jogador_local_jogar() :
-            if isinstance(self.tabuleiro.ultima_carta, CartaEspecial):
-                if self.tabuleiro.ultima_carta.tipo == 'mais-um':
-                    if self.tabuleiro.precisa_comprar_contador:
-                        cartas_compradas = []
-                        for _ in range(self.tabuleiro.contador_cartas_mais_um):
-                            carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
-                            self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
-                            cartas_compradas.append(carta_comprada)
-                        self.tabuleiro.precisa_comprar_contador = False
-                        self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
-                else:
-                    cartas_compradas = []
-                    carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
-                    self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
-                    cartas_compradas.append(carta_comprada)
-                    self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
-            else:
-                cartas_compradas = []
-                carta_comprada = self.tabuleiro.baralho.get_carta_aleatoria()
-                self.tabuleiro.jogadores[self.tabuleiro.jogador_local].mao.append(carta_comprada)
-                cartas_compradas.append(carta_comprada)
-                self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
-
-        elif self.tabuleiro.eh_a_vez_do_jogador_local_jogar():
-            messagebox.showwarning("Atenção", "Você foi bloqueado, passe o turno")
-        else:
-            messagebox.showwarning("Atenção", "Não é sua vez de jogar")
+        mensagem, cartas_compradas = self.tabuleiro.comprar_carta()
+        if mensagem == None:
+            self.adiciona_cartas_compradas_ao_jogador_design(cartas_compradas, self.dict_frames["jogador_local"])
+            return
+        messagebox.showwarning("Atenção", mensagem)
 
             
     def passar_turno(self):
@@ -243,7 +219,6 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.button_menu = PhotoImage(file = f"src/menu_images/img0.png")
         button_start = self.canvas.create_image(270, 570, image=self.button_menu)
         self.canvas.tag_bind(button_start, "<Button-1>", lambda x: self.start_match())
-        x=1
 
     def start_menu(self) -> None:
         self.set_canvas() 

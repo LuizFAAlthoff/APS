@@ -59,7 +59,8 @@ class Jogada():
         if len(self.jogador.mao) == 0:
             self.jogada_vencedora = True
             return True
-        return False
+        else:
+            return False
     
     def verificar_existencia_especial_no_encadeamento(self):
         for carta in self.__cartas_encadeamento:
