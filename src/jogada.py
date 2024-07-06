@@ -113,33 +113,38 @@ class Jogada():
 
 
     def verificar_carta(self, carta_para_jogar):
-        if self.encadeamento_atual_menor_que_3():                        #verifica se seq max ainda não foi atingida
-            if self.verificar_existencia_especial_no_encadeamento():    #caso exista carta especial no encadeamento, retorna False
+        carta_eh_valida = False
+        if self.encadeamento_atual_menor_que_3():                        
+            if self.verificar_existencia_especial_no_encadeamento():    
                 print("Carta especial não pode ser jogada no meio de uma sequência")
-                return False
-            if isinstance(carta_para_jogar, CartaEspecial):             #verifica se a carta a ser jogada é especial
-                if self.verificar_se_eh_ultima_carta():                     #caso a carta especial a ser jogada seja a última, retorna False
+                return carta_eh_valida
+            if isinstance(carta_para_jogar, CartaEspecial):             
+                if self.verificar_se_eh_ultima_carta():                     
                     print("Carta especial não pode ser jogada como última carta")
-                    return False
-                else:                                                       #caso não seja a última, verifica se a lista de encadeamento está vazia
-                    if self.verificar_se_lista_encadeamento_esta_vazia():       
-                        return True                                             #caso esteja vazia, retorna True
-                    else:                                                       #caso não esteja vazia, retorna False
+                    return carta_eh_valida
+                else:                                                       
+                    if self.verificar_se_lista_encadeamento_esta_vazia():
+                        carta_eh_valida = True       
+                        return carta_eh_valida                                             
+                    else:                                                       
                         print("Carta especial não pode ser jogada no meio de uma sequência")
-                        return False
-            else:                                                       #caso a carta a ser jogada não seja especial, ela é normal
-                if self.verificar_se_lista_encadeamento_esta_vazia():       #verifica se a lista de encadeamento está vazia
+                        return carta_eh_valida
+            else:                                                       
+                if self.verificar_se_lista_encadeamento_esta_vazia():       
                     print("Pegou carta mais recente do tabuleiro")
                     pode_numero = True
-                    carta_mais_recente = self.carta_recente_tabuleiro           #pega a carta mais recente a partir do parametro recebido pelo tabuleiro
-                    return self.checar_compatibilidade(carta_para_jogar, carta_mais_recente, pode_numero) #checa se a carta a ser jogada é compatível com a carta mais recente
+                    carta_mais_recente = self.carta_recente_tabuleiro   
+                    eh_compativel = self.checar_compatibilidade(carta_para_jogar, carta_mais_recente, pode_numero)      
+                    return eh_compativel
                         
                 else:
                     print("Pegou carta mais recente da lista de encadeamento")
-                    carta_mais_recente = self.get_ultima_carta_encadeamento()          #pega a carta mais recente a partir da lista de encadeamento
+                    carta_mais_recente = self.get_ultima_carta_encadeamento()          
                     pode_numero = False
-                    if self.checar_compatibilidade(carta_para_jogar, carta_mais_recente, pode_numero): #checa se a carta a ser jogada é compatível com a carta mais recente
-                        return True                                             #caso seja compatível, retorna True
-        else:                                                       #caso a seq max tenha sido atingida, retorna False
+                    eh_compativel = self.checar_compatibilidade(carta_para_jogar, carta_mais_recente, pode_numero)
+                    if eh_compativel: 
+                        carta_eh_valida = True
+                        return carta_eh_valida                                             
+        else:                                                       
             messagebox.showwarning("Atenção", "Encadeamento máximo atingido")
-            return False
+            return carta_eh_valida

@@ -197,7 +197,8 @@ class AtorJogadorInterface(DogPlayerInterface):
         if titulo == "":
             self.remove_botao_carta(carta)
             return
-        messagebox.showwarning(titulo, mensagem)
+        else:
+            messagebox.showwarning(titulo, mensagem) #coloquei esse else pra ajudar a fazer os diagramas
 
 
     def remove_botao_carta(self, carta):
