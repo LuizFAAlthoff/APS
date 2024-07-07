@@ -242,50 +242,6 @@ class Tabuleiro:
     def eh_a_vez_do_jogador_local_jogar(self):
         return self.local_id == self.jogadores[self.jogador_atual].id
     
-    # def passar_turno(self):
-    #     if not self.precisa_comprar_contador:
-    #         titulo = ""
-    #         move = ""
-    #         if self.jogada != None:
-    #             self.jogador_atual = (self.jogador_atual + 1) % 3
-    #             self.ultima_carta = self.jogada.get_ultima_carta_encadeamento()
-    #             if isinstance(self.ultima_carta, CartaEspecial):
-    #                 self.jogada = None
-    #                 if self.ultima_carta.tipo == "bloquear":
-    #                     move = self.transforma_jogada_para_move("bloquear")
-    #                     titulo = ""
-    #                     move = move
-    #                 else:
-    #                     self.add_contador_cartas_mais_um()
-    #                     move = self.transforma_jogada_para_move("mais-um")
-    #                     return "", move
-    #             else:
-    #                 if self.jogada.verificar_condicao_de_vitoria():
-    #                     self.bloqueado = False
-    #                     self.jogada.jogada_vencedora = True
-    #                     move = self.transforma_jogada_para_move("vitoria")
-    #                     return "", move
-
-    #                 else:
-    #                     self.bloqueado = False
-    #                     self.jogada = None
-    #                     move = self.transforma_jogada_para_move("passar_turno")
-    #                     return "", move
-            
-    #         elif self.bloqueado:
-    #             self.jogador_atual = (self.jogador_atual + 1) % 3
-    #             self.bloqueado = False
-    #             move = self.transforma_jogada_para_move("passar_turno")
-    #             return "", move
-                
-    #         else:
-    #             titulo = "Atenção"
-    #             move = "Você deve jogar uma carta"
-    #     else:
-    #         titulo = "Atenção"
-    #         move = "Você deve comprar a quantidade de cartas do contador"
-        
-        
     def realizar_jogada(self, carta):
         if not self.precisa_comprar_contador:
             if self.bloqueado == False:

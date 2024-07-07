@@ -195,7 +195,8 @@ class AtorJogadorInterface(DogPlayerInterface):
                         self.__dog_server_interface.send_move(move)
                         self.tela_partida_design()
                 else:
-                    if self.tabuleiro.jogada.verificar_condicao_de_vitoria():
+                    eh_vitoria = self.tabuleiro.jogada.verificar_condicao_de_vitoria()
+                    if eh_vitoria:
                         self.tabuleiro.bloqueado = False
                         self.tabuleiro.jogada = None
                         move = self.tabuleiro.transforma_jogada_para_move("vitoria")
@@ -229,7 +230,7 @@ class AtorJogadorInterface(DogPlayerInterface):
             self.remove_botao_carta(carta)
             return
         else:
-            messagebox.showwarning(titulo, mensagem) #coloquei esse else pra ajudar a fazer os diagramas
+            messagebox.showwarning(titulo, mensagem) 
 
 
     def remove_botao_carta(self, carta):
