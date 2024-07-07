@@ -19,7 +19,7 @@ class AtorJogadorInterface(DogPlayerInterface):
         self.dog_server_interface = DogActor()
         self.window = window.getWindow()
         self.window.title("Rainbow Cards")
-        self.tabuleiro  = Tabuleiro(Baralho()) #bota Baralho() em uma variavel e passar a variavel pro parametro de Tabuleiro()
+        self.tabuleiro  = Tabuleiro(Baralho()) 
         self.dict_cards = {}
         self.dict_frames = {}
         self.dict_btn_cartas = {}
@@ -28,7 +28,8 @@ class AtorJogadorInterface(DogPlayerInterface):
 
 
     def receive_start(self, start_status):
-        self.tabuleiro.set_local_id(start_status.get_local_id())
+        local_id = start_status.get_local_id()
+        self.tabuleiro.set_local_id(local_id)
         self.set_canvas()
 
     def receive_move(self, a_move: dict):
@@ -238,7 +239,6 @@ class AtorJogadorInterface(DogPlayerInterface):
         btn = self.dict_btn_cartas[carta]
         btn.destroy()
         del self.dict_btn_cartas[carta]
-        print(btn)
 
 
     def set_canvas(self): 
@@ -246,7 +246,7 @@ class AtorJogadorInterface(DogPlayerInterface):
             self.window,bg = "#ffffff",height = 720,width = 1280,bd = 0,highlightthickness = 0,relief = "ridge")
         self.canvas.place(relx=0.5, rely=0.5, anchor=CENTER)
     
-    def create_menu_design(self): #MUDAR NOME DE FUNÇÃO
+    def create_menu_design(self): 
         self.background_img = PhotoImage(file = f"src/menu_images/background.png")
         self.canvas.create_image(0, 0,image=self.background_img,anchor="nw")
         self.button_menu = PhotoImage(file = f"src/menu_images/img0.png")

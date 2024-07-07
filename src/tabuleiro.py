@@ -17,7 +17,7 @@ class Tabuleiro:
         self.__jogador_atual = 0
         self.__local_id = ""
         self.__ultima_carta = self.__baralho.get_carta_normal_aleatoria()
-        self.cartas_encadeadas = []
+        # self.cartas_encadeadas = []
         self.bloqueado = False
         self.precisa_comprar_contador = False
         self.jogada = None
@@ -130,13 +130,12 @@ class Tabuleiro:
         self.jogador_atual = jogador_atual
 
     def atualizar_jogadores(self, a_move):
-        print(a_move)
         for i, jogador in enumerate(a_move["jogadores"]):
             cartas_jogador = []
             for carta in jogador['mao']:
                 if carta['cor_primaria'] == 'preto':
-                    carta_epecial = CartaEspecial(carta['cor_primaria'], carta['tipo'])
-                    cartas_jogador.append(carta_epecial)
+                    carta_especial = CartaEspecial(carta['cor_primaria'], carta['tipo'])
+                    cartas_jogador.append(carta_especial)
                 else:
                     carta_normal = CartaNormal(carta['cor_primaria'],carta['cor_secundaria'], carta['numero'])
                     cartas_jogador.append(carta_normal)
@@ -224,8 +223,8 @@ class Tabuleiro:
         if move_carta["cor_primaria"] == 'preto':
             carta = CartaEspecial(move_carta["cor_primaria"], move_carta["tipo"])
             return carta
-        return CartaNormal(move_carta["cor_primaria"], move_carta["cor_secundaria"], move_carta["numero"])
-
+        carta = CartaNormal(move_carta["cor_primaria"], move_carta["cor_secundaria"], move_carta["numero"])
+        return carta
     
     def set_local_id(self, local_id):
         self.__local_id = local_id

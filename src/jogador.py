@@ -61,14 +61,5 @@ class Jogador:
                     'tipo': carta.tipo
                 }
             jogador['mao'].append(carta_dict)
-
-            
         return jogador
     
-
-    def print_cartas(self):
-        for carta in self.__mao:
-            if isinstance(carta, CartaNormal):
-                print(carta.cor_primaria, carta.cor_secundaria, carta.numero)
-            else:
-                print(carta.cor_primaria, carta.tipo)

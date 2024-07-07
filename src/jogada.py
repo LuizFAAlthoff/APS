@@ -40,9 +40,6 @@ class Jogada():
     def jogada_vencedora(self, jogada_vencedora):
         self.__jogada_vencedora = jogada_vencedora
 
-    def __del__(self):
-        print(f"Jogada do jogador {self.__jogador.nome} foi deletada")
-
     def encadeamento_atual_menor_que_3(self):
         return len(self.__cartas_encadeamento) < 3
         
@@ -87,27 +84,19 @@ class Jogada():
     def checar_compatibilidade(self, carta_para_jogar, carta_mais_recente, pode_numero):
         carta_eh_valida = False
         if isinstance(carta_mais_recente, CartaEspecial):
-            print("Carta compatível porque a carta anterior é especial")
             carta_eh_valida = True
         elif pode_numero and carta_para_jogar.numero == carta_mais_recente.numero:
-            print("Carta compatível com a anterior porque é a primeira carta e números são iguais")
             carta_eh_valida = True
         elif carta_mais_recente.cor_primaria == carta_para_jogar.cor_primaria:
-            print("Carta compatível com a anterior porque cores primárias são iguais")
             carta_eh_valida = True
         elif carta_mais_recente.cor_primaria == carta_para_jogar.cor_secundaria:
-            print("Carta compatível com a anterior porque cores primária e secundária são iguais")
             carta_eh_valida = True
         elif carta_mais_recente.cor_secundaria == carta_para_jogar.cor_primaria:
-            print("Carta compatível com a anterior porque cores secundária e primária são iguais")
             carta_eh_valida = True
         elif carta_mais_recente.cor_secundaria == carta_para_jogar.cor_secundaria:
-            print("Carta compatível com a anterior porque cores secundárias são iguais")
             carta_eh_valida = True
         else:
-            print("Carta incompatível com a anterior")
             carta_eh_valida = False
-
         return carta_eh_valida
             
 
